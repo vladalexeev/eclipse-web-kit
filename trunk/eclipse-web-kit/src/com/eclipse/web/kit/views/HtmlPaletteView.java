@@ -8,6 +8,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.jface.action.*;
@@ -41,6 +42,9 @@ public class HtmlPaletteView extends ViewPart {
 	 * The ID of the view as specified by the extension.
 	 */
 	public static final String ID = "com.eclipse.web.kit.views.HtmlPaletteView";
+	
+	public static final String ITEM_LINK="Link";
+	public static final String ITEM_IMAGE="Image";
 
 	private TableViewer viewer;
 	private Action action1;
@@ -63,7 +67,7 @@ public class HtmlPaletteView extends ViewPart {
 		public void dispose() {
 		}
 		public Object[] getElements(Object parent) {
-			return new String[] { "One", "Two", "Three" };
+			return new String[] {ITEM_LINK, ITEM_IMAGE };
 		}
 	}
 	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -166,36 +170,11 @@ public class HtmlPaletteView extends ViewPart {
 		doubleClickAction = new Action() {
 			public void run() {
 				ISelection selection = viewer.getSelection();
-				Object obj = ((IStructuredSelection)selection).getFirstElement();
-				IEditorPart editor=PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-				IEditorInput editorInput = editor.getEditorInput();
-				String documentFileName=null;
-				if (editorInput instanceof IFileEditorInput) {
-					IFileEditorInput fileEditorInput=(IFileEditorInput) editorInput;
-					documentFileName=fileEditorInput.getFile().getLocation().toString();
-				}
-				
-				if (editor instanceof ITextEditor) {
-					ITextEditor textEditor = (ITextEditor) editor;
-			        IDocument doc = textEditor.getDocumentProvider().getDocument(editorInput);
-			        ITextSelection sel = (ITextSelection) textEditor.getSelectionProvider().getSelection();
-			        
-			        FileDialog fileDialog=new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), SWT.OPEN);
-			        fileDialog.setFilterExtensions(new String[]{"*.jpg;*.png,*.gif", "*.*"});
-			        fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
-			        String selectedFileName=fileDialog.open();
-
-			        if (documentFileName!=null && selectedFileName!=null) {
-			        	try {
-			        		doc.replace(sel.getOffset(), sel.getLength(), "!!!proba!!! "+obj+
-			        				" documentFileName="+documentFileName+
-			        				" selectedFileName="+selectedFileName+"\n");
-			        	} catch (BadLocationException e) {
-			        		// TODO Auto-generated catch block
-			        		e.printStackTrace();
-			        	}
-			        }
-			        
+				String item = (String) ((IStructuredSelection)selection).getFirstElement();
+				if (item.equals(ITEM_LINK)) {
+					doActionLink();
+				} else if (item.equals(ITEM_IMAGE)) {
+					doActionImage();
 				}
 			}
 		};
@@ -220,5 +199,76 @@ public class HtmlPaletteView extends ViewPart {
 	 */
 	public void setFocus() {
 		viewer.getControl().setFocus();
+	}
+	
+	private IWorkbenchWindow getActiveWorkbenchWindow() {
+		if (PlatformUI.getWorkbench()!=null) {
+			return PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		}
+		
+		return null;
+	}
+	
+	private IEditorPart getActiveEditor() {
+		if (getActiveWorkbenchWindow()!=null) {
+			if (getActiveWorkbenchWindow().getActivePage()!=null) {
+				return getActiveWorkbenchWindow().getActivePage().getActiveEditor();
+			}
+		}
+		
+		return null;
+	}
+	
+	private void addTextToActveEditor(String text) {
+		IEditorPart editor=getActiveEditor();
+		
+		if (editor!=null && editor instanceof ITextEditor) {
+			IEditorInput editorInput = editor.getEditorInput();
+			ITextEditor textEditor = (ITextEditor) editor;
+	        IDocument doc = textEditor.getDocumentProvider().getDocument(editorInput);
+	        ITextSelection sel = (ITextSelection) textEditor.getSelectionProvider().getSelection();
+	        
+	        try {
+        		doc.replace(sel.getOffset(), sel.getLength(), text);
+        	} catch (BadLocationException e) {
+        		e.printStackTrace();
+        	}
+
+	        TextSelection newSelection=new TextSelection(sel.getOffset()+text.length(), 0);
+	        textEditor.getSelectionProvider().setSelection(newSelection);
+	        
+	        getActiveWorkbenchWindow().getActivePage().getActiveEditor().setFocus();
+		}
+	}
+	
+	private void doActionLink() {
+		IEditorPart editor=getActiveEditor();
+		
+		if (editor!=null && editor instanceof ITextEditor) {
+			addTextToActveEditor("!!!LINK LINK!!!\n");
+		}
+		
+	}
+	
+	private void doActionImage() {
+		IEditorPart editor=getActiveEditor();
+		
+		if (editor!=null && editor instanceof ITextEditor) {
+	        FileDialog fileDialog=new FileDialog(getActiveWorkbenchWindow().getShell(), SWT.OPEN);
+	        fileDialog.setFilterExtensions(new String[]{"*.jpg;*.png,*.gif", "*.*"});
+	        fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
+	        String selectedFileName=fileDialog.open();			
+			
+			IEditorInput editorInput = editor.getEditorInput();
+			String documentFileName=null;
+			if (editorInput instanceof IFileEditorInput) {
+				IFileEditorInput fileEditorInput=(IFileEditorInput) editorInput;
+				documentFileName=fileEditorInput.getFile().getLocation().toString();
+			}
+			
+			addTextToActveEditor("?!!!proba!!!? IMAGE "+
+	        				" documentFileName="+documentFileName+
+	        				" selectedFileName="+selectedFileName+"\n");
+		}
 	}
 }
