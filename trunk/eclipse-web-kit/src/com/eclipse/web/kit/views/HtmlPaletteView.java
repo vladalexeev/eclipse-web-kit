@@ -228,7 +228,7 @@ public class HtmlPaletteView extends ViewPart {
 		return null;
 	}
 	
-	private void addTextToActveEditor(String text) {
+	private void addTextToActiveEditor(String text) {
 		IEditorPart editor=getActiveEditor();
 		
 		if (editor!=null && editor instanceof ITextEditor) {
@@ -250,8 +250,14 @@ public class HtmlPaletteView extends ViewPart {
 		}
 	}
 	
+	
+
+	
 	private void doActionLink() {
-		addTextToActveEditor("!!!LINK LINK!!!\n");
+		LinkDialog dialog=new LinkDialog(getActiveWorkbenchWindow().getShell());
+		if (dialog.open()) {
+			addTextToActiveEditor("!!!LINK LINK!!!\n");
+		}
 	}
 	
 	private void doActionImage() {
@@ -275,7 +281,7 @@ public class HtmlPaletteView extends ViewPart {
 		ImageLoader imageLoader=new ImageLoader();
 		ImageData[] imageData=imageLoader.load(selectedImageFileName);
 
-		addTextToActveEditor(
+		addTextToActiveEditor(
 			"<img src=\""+createRelativePath(documentFileName, selectedImageFileName)+"\""+
 			" width=\""+imageData[0].width+"\""+
 			" height=\""+imageData[0].height+"\""+
