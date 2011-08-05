@@ -1,6 +1,9 @@
 package com.eclipse.web.kit.views;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.part.*;
@@ -11,6 +14,8 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.*;
@@ -254,7 +259,11 @@ public class HtmlPaletteView extends ViewPart {
 		FileDialog fileDialog=new FileDialog(getActiveWorkbenchWindow().getShell(), SWT.OPEN);
 		fileDialog.setFilterExtensions(new String[]{"*.jpg*;.png;*.gif", "*.*"});
 		fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
-		String selectedFileName=fileDialog.open();			
+		String selectedImageFileName=fileDialog.open();
+		
+		if (selectedImageFileName==null) {
+			return;
+		}
 
 		IEditorInput editorInput = editor.getEditorInput();
 		String documentFileName=null;
@@ -262,9 +271,72 @@ public class HtmlPaletteView extends ViewPart {
 			IFileEditorInput fileEditorInput=(IFileEditorInput) editorInput;
 			documentFileName=fileEditorInput.getFile().getLocation().toString();
 		}
+		
+		ImageLoader imageLoader=new ImageLoader();
+		ImageData[] imageData=imageLoader.load(selectedImageFileName);
 
-		addTextToActveEditor("?!!!proba!!!? IMAGE "+
-				" documentFileName="+documentFileName+
-				" selectedFileName="+selectedFileName+"\n");
+		addTextToActveEditor(
+			"<img src=\""+createRelativePath(documentFileName, selectedImageFileName)+"\""+
+			" width=\""+imageData[0].width+"\""+
+			" height=\""+imageData[0].height+"\""+
+			" border=\"0\" alt=\"\" title=\"\" />");
+
+	}
+	
+	private List<String> splitPathToTokens(String path) {
+		ArrayList<String> result=new ArrayList<String>();
+		
+		String str="";
+		for (int i=0; i<path.length(); i++) {
+			char c=path.charAt(i);
+			if (c=='/' || c=='\\') {
+				if (str.length()>0) {
+					result.add(str);
+				}
+				str="";
+			} else {
+				str+=c;
+			}
+		}
+		
+		if (str.length()>0) {
+			result.add(str);
+		}
+		
+		return result;
+	}
+	
+	private String createRelativePath(String baseFilePath, String targetFilePath) {
+		List<String> baseList=splitPathToTokens(baseFilePath);
+		List<String> targetList=splitPathToTokens(targetFilePath);
+		int baseListMax=baseList.size()-1;
+		int targetListMax=targetList.size()-1;
+		
+		String result="";
+		
+		int index=0;
+		while (index<Math.min(baseListMax,targetListMax) &&
+				baseList.get(index).equals(targetList.get(index))) {
+			index++;
+		}
+
+		while (index<Math.min(baseListMax,targetListMax)) {			
+			result+="../"+result+targetList.get(index)+"/";
+			index++;
+		}
+		
+		while (index<baseListMax) {
+			index++;
+			result="../"+result;
+		}
+		
+		while (index<targetListMax) {
+			result+=targetList.get(index)+"/";
+			index++;
+		}
+		
+		result+=targetList.get(targetListMax);
+		
+		return result;
 	}
 }
