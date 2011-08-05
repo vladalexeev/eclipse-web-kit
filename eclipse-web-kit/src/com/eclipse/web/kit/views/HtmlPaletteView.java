@@ -228,6 +228,29 @@ public class HtmlPaletteView extends ViewPart {
 		return null;
 	}
 	
+	private String getActiveEditorFileName() {
+		IEditorInput editorInput = getActiveEditor().getEditorInput();
+		String documentFileName=null;
+		if (editorInput instanceof IFileEditorInput) {
+			IFileEditorInput fileEditorInput=(IFileEditorInput) editorInput;
+			documentFileName=fileEditorInput.getFile().getLocation().toString();
+		}
+		
+		return documentFileName;
+	}
+	
+	private String getActiveSelectionText() {
+		IEditorPart editor=getActiveEditor();
+		
+		if (editor!=null && editor instanceof ITextEditor) {
+			ITextEditor textEditor = (ITextEditor) editor;
+	        ITextSelection sel = (ITextSelection) textEditor.getSelectionProvider().getSelection();
+	        return sel.getText();
+		}
+		
+		return null;
+	}
+	
 	private void addTextToActiveEditor(String text) {
 		IEditorPart editor=getActiveEditor();
 		
@@ -255,13 +278,34 @@ public class HtmlPaletteView extends ViewPart {
 	
 	private void doActionLink() {
 		LinkDialog dialog=new LinkDialog(getActiveWorkbenchWindow().getShell());
+		
+		String selectionText=getActiveSelectionText();
+		dialog.setText(selectionText);
+		
+		if (selectionText!=null && selectionText.startsWith("http://")) {
+			dialog.setHyperlink(selectionText);
+		}
+		
 		if (dialog.open()) {
-			addTextToActiveEditor("!!!LINK LINK!!!\n");
+			String resultText=dialog.getResultText();
+			String resultHyperlink=dialog.getResultHyperlink();
+			
+			if (!resultHyperlink.startsWith("http://")) {
+				String documentFileName=getActiveEditorFileName();
+				resultHyperlink=createRelativePath(documentFileName, resultHyperlink);
+			}
+			
+			if (resultText==null || resultText.length()==0) {
+				resultText=resultHyperlink;
+			}
+			
+			addTextToActiveEditor(
+				"<a href=\""+resultHyperlink+"\">"+resultText+"</a>"
+			);
 		}
 	}
 	
 	private void doActionImage() {
-		IEditorPart editor=getActiveEditor();
 		FileDialog fileDialog=new FileDialog(getActiveWorkbenchWindow().getShell(), SWT.OPEN);
 		fileDialog.setFilterExtensions(new String[]{"*.jpg*;.png;*.gif", "*.*"});
 		fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
@@ -271,12 +315,7 @@ public class HtmlPaletteView extends ViewPart {
 			return;
 		}
 
-		IEditorInput editorInput = editor.getEditorInput();
-		String documentFileName=null;
-		if (editorInput instanceof IFileEditorInput) {
-			IFileEditorInput fileEditorInput=(IFileEditorInput) editorInput;
-			documentFileName=fileEditorInput.getFile().getLocation().toString();
-		}
+		String documentFileName=getActiveEditorFileName();
 		
 		ImageLoader imageLoader=new ImageLoader();
 		ImageData[] imageData=imageLoader.load(selectedImageFileName);
