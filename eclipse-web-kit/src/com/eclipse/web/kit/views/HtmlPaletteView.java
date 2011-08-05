@@ -22,6 +22,8 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.SWT;
 
+import com.eclipse.web.kit.Activator;
+
 
 /**
  * This sample class demonstrates how to plug-in a new
@@ -50,6 +52,10 @@ public class HtmlPaletteView extends ViewPart {
 	
 	public static final String ITEM_LINK="Link";
 	public static final String ITEM_IMAGE="Image";
+	public static final String[][] ITEM_IMAGES=new String[][]{
+		{ITEM_LINK, "icons/hyperlink.png"},
+		{ITEM_IMAGE, "icons/picture.png"}
+	};
 
 	private TableViewer viewer;
 	private Action action1;
@@ -83,8 +89,19 @@ public class HtmlPaletteView extends ViewPart {
 			return getImage(obj);
 		}
 		public Image getImage(Object obj) {
-			return PlatformUI.getWorkbench().
-					getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
+			String imageName=null;
+			for (int i=0; i<ITEM_IMAGES.length; i++) {
+				if (ITEM_IMAGES[i][0].equals(obj)) {
+					imageName=ITEM_IMAGES[i][1];
+				}
+			}
+			
+			if (imageName!=null) {
+				return Activator.getImageDescriptor(imageName).createImage();
+			} else {
+				return PlatformUI.getWorkbench().
+						getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
+			}
 		}
 	}
 	class NameSorter extends ViewerSorter {
