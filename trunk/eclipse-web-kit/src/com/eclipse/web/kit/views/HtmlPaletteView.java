@@ -171,10 +171,14 @@ public class HtmlPaletteView extends ViewPart {
 			public void run() {
 				ISelection selection = viewer.getSelection();
 				String item = (String) ((IStructuredSelection)selection).getFirstElement();
-				if (item.equals(ITEM_LINK)) {
-					doActionLink();
-				} else if (item.equals(ITEM_IMAGE)) {
-					doActionImage();
+				
+				IEditorPart editor=getActiveEditor();				
+				if (editor!=null && editor instanceof ITextEditor) {				
+					if (item.equals(ITEM_LINK)) {
+						doActionLink();
+					} else if (item.equals(ITEM_IMAGE)) {
+						doActionImage();
+					}
 				}
 			}
 		};
@@ -242,33 +246,25 @@ public class HtmlPaletteView extends ViewPart {
 	}
 	
 	private void doActionLink() {
-		IEditorPart editor=getActiveEditor();
-		
-		if (editor!=null && editor instanceof ITextEditor) {
-			addTextToActveEditor("!!!LINK LINK!!!\n");
-		}
-		
+		addTextToActveEditor("!!!LINK LINK!!!\n");
 	}
 	
 	private void doActionImage() {
 		IEditorPart editor=getActiveEditor();
-		
-		if (editor!=null && editor instanceof ITextEditor) {
-	        FileDialog fileDialog=new FileDialog(getActiveWorkbenchWindow().getShell(), SWT.OPEN);
-	        fileDialog.setFilterExtensions(new String[]{"*.jpg;*.png,*.gif", "*.*"});
-	        fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
-	        String selectedFileName=fileDialog.open();			
-			
-			IEditorInput editorInput = editor.getEditorInput();
-			String documentFileName=null;
-			if (editorInput instanceof IFileEditorInput) {
-				IFileEditorInput fileEditorInput=(IFileEditorInput) editorInput;
-				documentFileName=fileEditorInput.getFile().getLocation().toString();
-			}
-			
-			addTextToActveEditor("?!!!proba!!!? IMAGE "+
-	        				" documentFileName="+documentFileName+
-	        				" selectedFileName="+selectedFileName+"\n");
+		FileDialog fileDialog=new FileDialog(getActiveWorkbenchWindow().getShell(), SWT.OPEN);
+		fileDialog.setFilterExtensions(new String[]{"*.jpg*;.png;*.gif", "*.*"});
+		fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
+		String selectedFileName=fileDialog.open();			
+
+		IEditorInput editorInput = editor.getEditorInput();
+		String documentFileName=null;
+		if (editorInput instanceof IFileEditorInput) {
+			IFileEditorInput fileEditorInput=(IFileEditorInput) editorInput;
+			documentFileName=fileEditorInput.getFile().getLocation().toString();
 		}
+
+		addTextToActveEditor("?!!!proba!!!? IMAGE "+
+				" documentFileName="+documentFileName+
+				" selectedFileName="+selectedFileName+"\n");
 	}
 }
