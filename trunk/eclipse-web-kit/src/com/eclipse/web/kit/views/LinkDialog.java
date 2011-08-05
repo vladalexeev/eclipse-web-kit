@@ -11,13 +11,16 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 public class LinkDialog extends Dialog {
-	boolean result=false;
+	private boolean result=false;
+	private String resultText;
+	private String resultHyperlink;
 	
 	Shell shell;
 	private Label labelText;
@@ -74,6 +77,12 @@ public class LinkDialog extends Dialog {
 		
 		buttonBrowse=new Button(shell, SWT.PUSH);
 		buttonBrowse.setText("Browse...");
+		buttonBrowse.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				doSelectFile();
+			}
+		});
 
 		GridData bottomGridData=new GridData();
 		bottomGridData.horizontalSpan=3;
@@ -94,6 +103,8 @@ public class LinkDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				result=true;
+				resultText=textText.getText();
+				resultHyperlink=textHyperlink.getText();
 				shell.close();
 			}
 			
@@ -128,5 +139,30 @@ public class LinkDialog extends Dialog {
 		}
 		
 		return result;
+	}
+	
+	public void setText(String text) {
+		textText.setText(text);
+	}
+	
+	public String getResultText() {
+		return resultText;
+	}
+	
+	public void setHyperlink(String text) {
+		textHyperlink.setText(text);
+	}
+	
+	public String getResultHyperlink() {
+		return resultHyperlink;
+	}
+	
+	private void doSelectFile() {
+		FileDialog fileDialog=new FileDialog(shell, SWT.OPEN);
+		fileDialog.setFilterExtensions(new String[]{"*.*"});
+		fileDialog.setFilterNames(new String[]{"All files"});
+		
+		String selectedFileName=fileDialog.open();
+		textHyperlink.setText(selectedFileName);
 	}
 }
