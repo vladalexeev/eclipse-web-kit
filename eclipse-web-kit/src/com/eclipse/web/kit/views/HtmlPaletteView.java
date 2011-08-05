@@ -333,7 +333,7 @@ public class HtmlPaletteView extends ViewPart {
 		}
 
 		while (index<Math.min(baseListMax,targetListMax)) {			
-			result+="../"+result+targetList.get(index)+"/";
+			result="../"+result+targetList.get(index)+"/";
 			index++;
 		}
 		
