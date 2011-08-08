@@ -1,11 +1,7 @@
 package com.eclipse.web.kit.views;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.part.*;
@@ -18,8 +14,6 @@ import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -27,6 +21,9 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.SWT;
 
 import com.eclipse.web.kit.Activator;
+import com.eclipse.web.kit.views.util.FileUtil;
+import com.eclipse.web.kit.views.util.ImageInfo;
+import com.eclipse.web.kit.views.util.ImageUtil;
 
 
 /**
@@ -56,9 +53,12 @@ public class HtmlPaletteView extends ViewPart {
 	
 	public static final String ITEM_LINK="Link";
 	public static final String ITEM_IMAGE="Image";
+	public static final String ITEM_ZOOM_IMAGE="Zoom image";
+	
 	public static final String[][] ITEM_IMAGES=new String[][]{
 		{ITEM_LINK, "icons/hyperlink.png"},
-		{ITEM_IMAGE, "icons/picture.png"}
+		{ITEM_IMAGE, "icons/picture.png"},
+		{ITEM_ZOOM_IMAGE, "icons/zoom-picture.png"}
 	};
 
 	private TableViewer viewer;
@@ -80,7 +80,7 @@ public class HtmlPaletteView extends ViewPart {
 		public void dispose() {
 		}
 		public Object[] getElements(Object parent) {
-			return new String[] {ITEM_LINK, ITEM_IMAGE };
+			return new String[] {ITEM_LINK, ITEM_IMAGE, ITEM_ZOOM_IMAGE };
 		}
 	}
 	class ViewLabelProvider extends LabelProvider implements ITableLabelProvider {
@@ -123,7 +123,7 @@ public class HtmlPaletteView extends ViewPart {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
 		viewer.setContentProvider(new ViewContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
-		viewer.setSorter(new NameSorter());
+		//viewer.setSorter(new NameSorter());
 		viewer.setInput(getViewSite());
 
 		// Create the help context id for the viewer's control
@@ -145,6 +145,8 @@ public class HtmlPaletteView extends ViewPart {
 						doActionLink();
 					} else if (item.equals(ITEM_IMAGE)) {
 						doActionImage();
+					} else if (item.equals(ITEM_ZOOM_IMAGE)) {
+						doActionZoomImage();
 					}
 				}
 			}
@@ -259,7 +261,7 @@ public class HtmlPaletteView extends ViewPart {
 			
 			if (!resultHyperlink.startsWith("http://")) {
 				String documentFileName=getActiveEditorFileName();
-				resultHyperlink=createRelativePath(documentFileName, resultHyperlink);
+				resultHyperlink=FileUtil.createRelativePath(documentFileName, resultHyperlink);
 			}
 			
 			if (resultText==null || resultText.length()==0) {
@@ -273,10 +275,7 @@ public class HtmlPaletteView extends ViewPart {
 	}
 	
 	private void doActionImage() {
-		FileDialog fileDialog=new FileDialog(getActiveWorkbenchWindow().getShell(), SWT.OPEN);
-		fileDialog.setFilterExtensions(new String[]{"*.jpg*;.png;*.gif", "*.*"});
-		fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
-		String selectedImageFileName=fileDialog.open();
+		String selectedImageFileName=FileUtil.selectImageFile(getActiveWorkbenchWindow().getShell());
 		
 		if (selectedImageFileName==null) {
 			return;
@@ -284,71 +283,39 @@ public class HtmlPaletteView extends ViewPart {
 
 		String documentFileName=getActiveEditorFileName();
 		
-		ImageLoader imageLoader=new ImageLoader();
-		ImageData[] imageData=imageLoader.load(selectedImageFileName);
+		ImageInfo imageInfo=ImageUtil.getImageInfo(selectedImageFileName);
 
 		addTextToActiveEditor(
-			"<img src=\""+createRelativePath(documentFileName, selectedImageFileName)+"\""+
-			" width=\""+imageData[0].width+"\""+
-			" height=\""+imageData[0].height+"\""+
+			"<img src=\""+FileUtil.createRelativePath(documentFileName, selectedImageFileName)+"\""+
+			" width=\""+imageInfo.getImageWidth()+"\""+
+			" height=\""+imageInfo.getImageHeight()+"\""+
 			" border=\"0\" alt=\"\" title=\"\" />");
-
 	}
 	
-	private List<String> splitPathToTokens(String path) {
-		ArrayList<String> result=new ArrayList<String>();
+	private void doActionZoomImage() {
+		ZoomImageDialog dialog=new ZoomImageDialog(getActiveWorkbenchWindow().getShell());
 		
-		String str="";
-		for (int i=0; i<path.length(); i++) {
-			char c=path.charAt(i);
-			if (c=='/' || c=='\\') {
-				if (str.length()>0) {
-					result.add(str);
-				}
-				str="";
-			} else {
-				str+=c;
-			}
+		if (dialog.open()) {
+			String documentFileName=getActiveEditorFileName();
+			String absoluteLargeImageFile=dialog.getResultLargeImageFile();
+			String relativeLargeImageFile=FileUtil.createRelativePath(documentFileName, absoluteLargeImageFile);
+			String largeImageFileName=FileUtil.getFileNameWithoutExt(absoluteLargeImageFile);
+			String absoluteSmallImageFile=dialog.getResultSmallImageFile();
+			String relativeSmallImageFile=FileUtil.createRelativePath(documentFileName, absoluteSmallImageFile);
+			String imageName=dialog.getResultImageName();
+			String imageDescription=dialog.getResultImageDescription();
+			
+			ImageInfo imageInfoLarge=ImageUtil.getImageInfo(absoluteLargeImageFile);
+			ImageInfo imageInfoSmall=ImageUtil.getImageInfo(absoluteSmallImageFile);
+			
+			addTextToActiveEditor(
+				"<a name=\""+largeImageFileName+"\" "+
+				" href=\"javascript:showImage('"+relativeLargeImageFile+"', '"+imageName+"', "+
+						imageInfoLarge.getImageWidth()+","+imageInfoLarge.getImageHeight()+",'"+imageDescription+"')\">\n"+
+				"<img src=\""+relativeSmallImageFile+"\" width=\""+imageInfoSmall.getImageWidth()+"\" height=\""+imageInfoSmall.getImageHeight()+"\""+
+						" border=\"0\" alt=\""+imageName+"\" title=\""+imageName+"\" /></a>");
 		}
-		
-		if (str.length()>0) {
-			result.add(str);
-		}
-		
-		return result;
 	}
 	
-	private String createRelativePath(String baseFilePath, String targetFilePath) {
-		List<String> baseList=splitPathToTokens(baseFilePath);
-		List<String> targetList=splitPathToTokens(targetFilePath);
-		int baseListMax=baseList.size()-1;
-		int targetListMax=targetList.size()-1;
-		
-		String result="";
-		
-		int index=0;
-		while (index<Math.min(baseListMax,targetListMax) &&
-				baseList.get(index).equals(targetList.get(index))) {
-			index++;
-		}
-
-		while (index<Math.min(baseListMax,targetListMax)) {			
-			result="../"+result+targetList.get(index)+"/";
-			index++;
-		}
-		
-		while (index<baseListMax) {
-			index++;
-			result="../"+result;
-		}
-		
-		while (index<targetListMax) {
-			result+=targetList.get(index)+"/";
-			index++;
-		}
-		
-		result+=targetList.get(targetListMax);
-		
-		return result;
-	}
+	
 }
