@@ -1,6 +1,8 @@
 package com.eclipse.web.kit.views;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Rectangle;
@@ -71,7 +73,7 @@ public class LinkDialog extends Dialog {
 		
 		GridData hyperlinkGridData=new GridData();
 		hyperlinkGridData.horizontalAlignment=GridData.FILL;
-		hyperlinkGridData.widthHint=250;
+		hyperlinkGridData.widthHint=300;
 		textHyperlink=new Text(shell, SWT.SINGLE| SWT.BORDER);
 		textHyperlink.setLayoutData(hyperlinkGridData);
 		
@@ -97,8 +99,8 @@ public class LinkDialog extends Dialog {
 		bottomPanel.setLayout(bottomLayout);
 		
 		buttonOk=new Button(bottomPanel, SWT.PUSH);
+		buttonOk.setEnabled(false);
 		buttonOk.setText("OK");
-		buttonOk.setSelection(true);
 		buttonOk.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -116,6 +118,13 @@ public class LinkDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				shell.close();
+			}
+		});
+		
+		textHyperlink.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				buttonOk.setEnabled(textHyperlink.getText()!=null && textHyperlink.getText().length()>0);
 			}
 		});
 		
