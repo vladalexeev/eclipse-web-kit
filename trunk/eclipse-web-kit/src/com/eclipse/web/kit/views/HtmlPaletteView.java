@@ -272,9 +272,15 @@ public class HtmlPaletteView extends ViewPart {
 				resultText=resultHyperlink;
 			}
 			
-			addTextToActiveEditor(
-				"<a href=\""+resultHyperlink+"\">"+resultText+"</a>"
-			);
+			String template=Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEMPLATE_LINK);
+			
+			HashMap<String,String> params=new HashMap<String, String>();
+			params.put("hyperlink", resultHyperlink);
+			params.put("text", resultText);
+			
+			String text=TemplateUtil.applyParametersToString(template, params);
+			
+			addTextToActiveEditor(text);
 		}
 	}
 	
@@ -289,14 +295,6 @@ public class HtmlPaletteView extends ViewPart {
 		String imageRelativePath=FileUtil.createRelativePath(documentFileName, selectedImageFileName);
 		
 		ImageInfo imageInfo=ImageUtil.getImageInfo(selectedImageFileName);
-
-//		addTextToActiveEditor(
-//			"<img src=\""+imageRelativePath+"\""+
-//			" width=\""+imageInfo.getImageWidth()+"\""+
-//			" height=\""+imageInfo.getImageHeight()+"\""+
-//			" border=\"0\" alt=\"\" title=\"\" />");
-//		
-//		addTextToActiveEditor(Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEMPLATE_IMAGE));
 		
 		String template=Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEMPLATE_IMAGE);
 		
@@ -325,12 +323,22 @@ public class HtmlPaletteView extends ViewPart {
 			ImageInfo imageInfoLarge=ImageUtil.getImageInfo(absoluteLargeImageFile);
 			ImageInfo imageInfoSmall=ImageUtil.getImageInfo(absoluteSmallImageFile);
 			
-			addTextToActiveEditor(
-				"<a name=\""+largeImageFileName+"\" "+
-				" href=\"javascript:showImage('"+relativeLargeImageFile+"', '"+imageName+"', "+
-						imageInfoLarge.getImageWidth()+","+imageInfoLarge.getImageHeight()+",'"+imageDescription+"')\">\n"+
-				"<img src=\""+relativeSmallImageFile+"\" width=\""+imageInfoSmall.getImageWidth()+"\" height=\""+imageInfoSmall.getImageHeight()+"\""+
-						" border=\"0\" alt=\""+imageName+"\" title=\""+imageName+"\" /></a>");
+			String template=Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEMPLATE_ZOOM_IMAGE);
+			
+			HashMap<String, String> params=new HashMap<String, String>();
+			params.put("largeImageFileName", largeImageFileName);
+			params.put("largeImageFile", relativeLargeImageFile);
+			params.put("largeImageWidth", Integer.toString(imageInfoLarge.getImageWidth()));
+			params.put("largeImageHeight", Integer.toString(imageInfoLarge.getImageHeight()));
+			params.put("smallImageFile", relativeSmallImageFile);
+			params.put("smallImageWidth", Integer.toString(imageInfoSmall.getImageWidth()));
+			params.put("smallImageHeight", Integer.toString(imageInfoSmall.getImageHeight()));
+			params.put("name", imageName);
+			params.put("description", imageDescription);
+			
+			String text=TemplateUtil.applyParametersToString(template, params);
+			
+			addTextToActiveEditor(text);
 		}
 	}
 	

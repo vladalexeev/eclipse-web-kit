@@ -19,7 +19,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		
 		store.setDefault(PreferenceConstants.P_TEMPLATE_LINK, 
-				"<a href=\"{hyperlik}\">{text}</a>");
+				"<a href=\"{hyperlink}\">{text}</a>");
 		store.setDefault(PreferenceConstants.P_TEMPLATE_IMAGE, 
 				"<img src=\"{imageFile}\" width=\"{imageWidth}\" height=\"{imageHeight}\" border=\"0\" alt=\"\" title=\"\" />");
 		store.setDefault(PreferenceConstants.P_TEMPLATE_ZOOM_IMAGE, 
