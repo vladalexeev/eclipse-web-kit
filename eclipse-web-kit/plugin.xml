@@ -34,5 +34,19 @@
             file="contexts.xml">
       </contexts>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.eclipse.web.kit.preferences.WebKitPreferencePage"
+            id="com.eclipse.web.kit.preferences.WebKitPreferencePage"
+            name="Eclipse web kit">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.eclipse.web.kit.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

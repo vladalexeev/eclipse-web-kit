@@ -1,6 +1,8 @@
 package com.eclipse.web.kit.views;
 
 
+import java.util.HashMap;
+
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
@@ -21,9 +23,11 @@ import org.eclipse.ui.*;
 import org.eclipse.swt.SWT;
 
 import com.eclipse.web.kit.Activator;
+import com.eclipse.web.kit.preferences.PreferenceConstants;
 import com.eclipse.web.kit.views.util.FileUtil;
 import com.eclipse.web.kit.views.util.ImageInfo;
 import com.eclipse.web.kit.views.util.ImageUtil;
+import com.eclipse.web.kit.views.util.TemplateUtil;
 
 
 /**
@@ -282,14 +286,27 @@ public class HtmlPaletteView extends ViewPart {
 		}
 
 		String documentFileName=getActiveEditorFileName();
+		String imageRelativePath=FileUtil.createRelativePath(documentFileName, selectedImageFileName);
 		
 		ImageInfo imageInfo=ImageUtil.getImageInfo(selectedImageFileName);
 
-		addTextToActiveEditor(
-			"<img src=\""+FileUtil.createRelativePath(documentFileName, selectedImageFileName)+"\""+
-			" width=\""+imageInfo.getImageWidth()+"\""+
-			" height=\""+imageInfo.getImageHeight()+"\""+
-			" border=\"0\" alt=\"\" title=\"\" />");
+//		addTextToActiveEditor(
+//			"<img src=\""+imageRelativePath+"\""+
+//			" width=\""+imageInfo.getImageWidth()+"\""+
+//			" height=\""+imageInfo.getImageHeight()+"\""+
+//			" border=\"0\" alt=\"\" title=\"\" />");
+//		
+//		addTextToActiveEditor(Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEMPLATE_IMAGE));
+		
+		String template=Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEMPLATE_IMAGE);
+		
+		HashMap<String, String> params=new HashMap<String, String>();
+		params.put("imageFile", imageRelativePath);
+		params.put("imageWidth", Integer.toString(imageInfo.getImageWidth()));
+		params.put("imageHeight", Integer.toString(imageInfo.getImageHeight()));
+		
+		String text=TemplateUtil.applyParametersToString(template, params);
+		addTextToActiveEditor(text);
 	}
 	
 	private void doActionZoomImage() {
