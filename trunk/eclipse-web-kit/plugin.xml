@@ -48,5 +48,27 @@
             class="com.eclipse.web.kit.preferences.PreferenceInitializer">
       </initializer>
    </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            id="eclipse-web-kit.contribution1"
+            objectClass="org.eclipse.core.resources.IProject">
+         <menu
+               id="eclipse-web-kit.menu1"
+               label="Eclipse Web Kit"
+               path="additions">
+            <separator
+                  name="group1">
+            </separator>
+         </menu>
+         <action
+               class="com.eclipse.web.kit.popup.actions.TestBrokenLinksAction"
+               enablesFor="1"
+               id="eclipse-web-kit.newAction"
+               label="Test broken links ..."
+               menubarPath="eclipse-web-kit.menu1/group1">
+         </action>
+      </objectContribution>
+   </extension>
 
 </plugin>
