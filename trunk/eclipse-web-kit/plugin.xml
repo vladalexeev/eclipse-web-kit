@@ -51,14 +51,14 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-            id="eclipse-web-kit.contribution1"
+            id="eclipse-web-kit.contribution.project"
             objectClass="org.eclipse.core.resources.IProject">
          <menu
-               id="eclipse-web-kit.menu1"
+               id="eclipse-web-kit.menu.project"
                label="Eclipse Web Kit"
                path="additions">
             <separator
-                  name="group1">
+                  name="group.project">
             </separator>
          </menu>
          <action
@@ -66,7 +66,7 @@
                enablesFor="1"
                id="eclipse-web-kit.newAction"
                label="Test broken links ..."
-               menubarPath="eclipse-web-kit.menu1/group1">
+               menubarPath="eclipse-web-kit.menu.project/group.project">
          </action>
       </objectContribution>
    </extension>
