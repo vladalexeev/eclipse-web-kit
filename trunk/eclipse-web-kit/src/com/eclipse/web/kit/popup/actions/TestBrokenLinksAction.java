@@ -32,10 +32,12 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 			System.out.println(iFile);
 			
 			try {
-				IMarker marker=iFile.createMarker(IMarker.PROBLEM);
+				//IMarker marker=iFile.createMarker(IMarker.PROBLEM);
+				IMarker marker=iFile.createMarker("eclipse-web-kit.brokenlink");
 				marker.setAttribute(IMarker.MESSAGE, "Broken link in "+iFile.getFullPath().toOSString());
 				marker.setAttribute(IMarker.CHAR_START, 5);
 				marker.setAttribute(IMarker.CHAR_END, 10);
+				marker.setAttribute(IMarker.LINE_NUMBER, 3);
 				
 			} catch (CoreException e1) {
 				e1.printStackTrace();
