@@ -1,4 +1,4 @@
-package com.eclipse.web.kit.views.util;
+package com.eclipse.web.kit.util;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -67,6 +67,34 @@ public class FileUtil {
 		}
 		
 		result+=targetList.get(targetListMax);
+		
+		return result;
+	}
+	
+	public static String createAbsolutePath(String baseDirPath, String relativePath) {
+		List<String> baseList=splitPathToTokens(baseDirPath);
+		List<String> relativeList=splitPathToTokens(relativePath);
+		
+		for (String token:relativeList) {
+			if (token.equals(".")) {
+				continue;
+			} else if (token.equals("..")) {
+				if (baseList.size()>0) {
+					baseList.remove(baseList.size()-1);
+				}
+			} else {
+				baseList.add(token);
+			}
+		}
+		
+		String result="";
+		for (String token:baseList) {
+			if (result.length()>0) {
+				result+="/";
+			} 
+			
+			result+=token;
+		}
 		
 		return result;
 	}

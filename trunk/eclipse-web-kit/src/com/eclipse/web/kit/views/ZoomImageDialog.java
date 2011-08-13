@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.eclipse.web.kit.views.util.FileUtil;
+import com.eclipse.web.kit.util.FileUtil;
 
 public class ZoomImageDialog extends Dialog {
 	private boolean result;

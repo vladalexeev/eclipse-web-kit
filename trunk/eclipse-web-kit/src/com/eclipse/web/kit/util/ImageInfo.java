@@ -1,4 +1,4 @@
-package com.eclipse.web.kit.views.util;
+package com.eclipse.web.kit.util;
 
 public class ImageInfo {
 	private String imageFileName;

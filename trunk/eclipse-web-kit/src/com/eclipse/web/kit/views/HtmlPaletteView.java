@@ -24,10 +24,10 @@ import org.eclipse.swt.SWT;
 
 import com.eclipse.web.kit.Activator;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
-import com.eclipse.web.kit.views.util.FileUtil;
-import com.eclipse.web.kit.views.util.ImageInfo;
-import com.eclipse.web.kit.views.util.ImageUtil;
-import com.eclipse.web.kit.views.util.TemplateUtil;
+import com.eclipse.web.kit.util.FileUtil;
+import com.eclipse.web.kit.util.ImageInfo;
+import com.eclipse.web.kit.util.ImageUtil;
+import com.eclipse.web.kit.util.TemplateUtil;
 
 
 /**

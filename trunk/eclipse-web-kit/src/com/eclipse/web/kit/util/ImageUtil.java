@@ -1,4 +1,4 @@
-package com.eclipse.web.kit.views.util;
+package com.eclipse.web.kit.util;
 
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
