@@ -1,4 +1,4 @@
-package com.eclipse.web.kit.brokenlinks;
+package com.eclipse.web.kit.util;
 
 public class LinkPattern {
 	String prefixText;
