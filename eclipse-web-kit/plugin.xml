@@ -47,6 +47,12 @@
             id="com.eclipse.web.kit.preferences.WebKitPreferences"
             name="Eclipse web kit">
       </page>
+      <page
+            category="com.eclipse.web.kit.preferences.WebKitPreferences"
+            class="com.eclipse.web.kit.preferences.BrokenLinksPreferences"
+            id="com.eclipse.web.kit.preferences.BrokenLinksPreferences"
+            name="Broken links">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

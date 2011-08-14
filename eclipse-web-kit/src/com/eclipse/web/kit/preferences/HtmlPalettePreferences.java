@@ -4,6 +4,7 @@ import org.eclipse.jface.preference.*;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import com.eclipse.web.kit.Activator;
+import com.eclipse.web.kit.preferences.editors.MultilIneStringFieldEditor;
 
 /**
  * This class represents a preference page that
@@ -26,7 +27,7 @@ public class HtmlPalettePreferences
 	public HtmlPalettePreferences() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		setDescription("A demonstration of a preference page implementation");
+		setDescription("Html palette preferences");
 	}
 	
 	/**
