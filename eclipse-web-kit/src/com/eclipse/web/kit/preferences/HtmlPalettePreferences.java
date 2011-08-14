@@ -4,7 +4,7 @@ import org.eclipse.jface.preference.*;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import com.eclipse.web.kit.Activator;
-import com.eclipse.web.kit.preferences.editors.MultilIneStringFieldEditor;
+import com.eclipse.web.kit.preferences.editors.MultiLineStringFieldEditor2;
 
 /**
  * This class represents a preference page that
@@ -37,9 +37,9 @@ public class HtmlPalettePreferences
 	 * restore itself.
 	 */
 	public void createFieldEditors() {
-		addField(new MultilIneStringFieldEditor(PreferenceConstants.P_TEMPLATE_LINK, "Link template", getFieldEditorParent()));
-		addField(new MultilIneStringFieldEditor(PreferenceConstants.P_TEMPLATE_IMAGE, "Image template", getFieldEditorParent()));
-		addField(new MultilIneStringFieldEditor(PreferenceConstants.P_TEMPLATE_ZOOM_IMAGE, "Zoom image template", getFieldEditorParent()));
+		addField(new MultiLineStringFieldEditor2(PreferenceConstants.P_TEMPLATE_LINK, "Link template", getFieldEditorParent()));
+		addField(new MultiLineStringFieldEditor2(PreferenceConstants.P_TEMPLATE_IMAGE, "Image template", getFieldEditorParent()));
+		addField(new MultiLineStringFieldEditor2(PreferenceConstants.P_TEMPLATE_ZOOM_IMAGE, "Zoom image template", getFieldEditorParent()));
 	}
 
 	/* (non-Javadoc)

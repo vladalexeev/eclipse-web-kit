@@ -8,7 +8,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 
-public class MultilIneStringFieldEditor extends FieldEditor {
+public class MultiLineStringFieldEditor2 extends FieldEditor {
 	
 	private Text textField;
 	
@@ -25,12 +25,12 @@ public class MultilIneStringFieldEditor extends FieldEditor {
     
     
 
-	public MultilIneStringFieldEditor() {
+	public MultiLineStringFieldEditor2() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public MultilIneStringFieldEditor(String name, String labelText,
+	public MultiLineStringFieldEditor2(String name, String labelText,
 			Composite parent) {
 		super(name, labelText, parent);
 		// TODO Auto-generated constructor stub
@@ -51,12 +51,12 @@ public class MultilIneStringFieldEditor extends FieldEditor {
 		getLabelControl(parent);
 
         textField = getTextControl(parent);
-        GridData gd = new GridData();
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
         gd.horizontalSpan = numColumns;// - 1;
-        gd.horizontalAlignment = GridData.FILL;
+        //gd.horizontalAlignment = GridData.FILL;
         //gd.grabExcessHorizontalSpace = true;
         gd.heightHint=60;
-        gd.widthHint=500;
+        //gd.widthHint=500;
         textField.setLayoutData(gd);
 	}
 

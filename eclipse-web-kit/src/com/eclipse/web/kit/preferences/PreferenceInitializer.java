@@ -28,6 +28,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		
 		store.setDefault(PreferenceConstants.P_BROKEN_LINK_TEMPLATES, 
 				"href=\"*\"\0src=\"*\"\0href=\"javascript:showImage('*'");
+		store.setDefault(PreferenceConstants.P_BROKEN_LINK_IGNORE, "");
 	}
 
 }

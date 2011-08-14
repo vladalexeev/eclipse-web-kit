@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.FieldEditor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -15,10 +17,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swt.widgets.Text;
 
-public class AddRemoveListFieldEditor extends FieldEditor {
+public class StringListFieldEditor extends FieldEditor {
 
 	/***
 	 * default separator for list items.
@@ -28,7 +28,7 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 	/***
 	 * vertical dialog units per char.
 	 */
-	private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 8;
+	private static final int VERTICAL_DIALOG_UNITS_PER_CHAR = 4;
 
 	/***
 	 * list height.
@@ -48,29 +48,34 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 	/***
 	 * The top-level control for the field editor.
 	 */
-	private Composite top;
-
-	/***
-	 * The text field for inputting new list items.
+	private Composite parent;
+	
+	/**
+	 * The main composite element of the field
 	 */
-	private Text textField;
+	private Composite main;
 
 	/***
 	 * The button for adding the contents of the text field to the list.
 	 */
-	private Button add;
+	private Button buttonAdd;
 
 	/***
 	 * The button for removing the currently-selected list item.
 	 */
-	private Button remove;
+	private Button buttonRemove;
+	
+	/**
+	 * the button for changing the currently-selected list item.
+	 */
+	private Button buttonEdit;
 
 	/***
 	 * The string used to separate list items in a single String representation.
 	 */
 	private String separator = DEFAULT_SEPARATOR;
 
-	private StringValidator validator=null;
+	private IInputValidator validator=null;
 
 	/***
 	 * Creates a string field editor of unlimited width. Use the method <code>setTextLimit</code> to limit the text.
@@ -78,7 +83,7 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 	 * @param labelText the label text of the field editor
 	 * @param parent the parent of the field editor's control
 	 */
-	public AddRemoveListFieldEditor(String name, String labelText, Composite parent) {
+	public StringListFieldEditor(String name, String labelText, Composite parent) {
 		super(name, labelText, parent);
 	}
 
@@ -90,7 +95,7 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 	 * @param removeButtonText text for the "remove" buttom
 	 * @param parent the parent of the field editor's control
 	 */
-	public AddRemoveListFieldEditor(String name, String labelText, String addButtonText, String removeButtonText, Composite parent) {
+	public StringListFieldEditor(String name, String labelText, String addButtonText, String removeButtonText, Composite parent) {
 		super(name, labelText, parent);
 		setAddButtonText(addButtonText);
 		setRemoveButtonText(removeButtonText);
@@ -98,11 +103,11 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 
 
 
-	public StringValidator getValidator() {
+	public IInputValidator getValidator() {
 		return validator;
 	}
 
-	public void setValidator(StringValidator validator) {
+	public void setValidator(IInputValidator validator) {
 		this.validator = validator;
 	}
 
@@ -110,48 +115,57 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 	 * @see org.eclipse.jface.preference.FieldEditor#adjustForNumColumns(int)
 	 */
 	protected void adjustForNumColumns(int numColumns) {
-		((GridData) this.top.getLayoutData()).horizontalSpan = numColumns;
+		((GridData) this.parent.getLayoutData()).horizontalSpan = numColumns;
 	}
 
 	/***
 	 * @see org.eclipse.jface.preference.FieldEditor#doFillIntoGrid (Composite, int)
 	 */
 	protected void doFillIntoGrid(Composite parent, int numColumns) {
-		this.top = parent;
+		this.parent = parent;
 
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.horizontalSpan = numColumns;
-		this.top.setLayoutData(gd);
+		this.parent.setLayoutData(gd);
 
-		Label label = getLabelControl(this.top);
+		Label label = getLabelControl(this.parent);
 		GridData labelData = new GridData();
 		labelData.horizontalSpan = numColumns;
 		label.setLayoutData(labelData);
+		
+		main=new Composite(parent, SWT.NONE);
+		GridLayout mainLayout=new GridLayout(2, false);
+		main.setLayout(mainLayout);
+		
+		GridData mainData=new GridData(GridData.FILL_HORIZONTAL);
+		mainData.horizontalSpan=numColumns;
+		main.setLayoutData(mainData);
+		
 
-		this.list = new List(this.top, SWT.BORDER);
+		this.list = new List(main, SWT.BORDER);
 
 		// Create a grid data that takes up the extra space in the dialog and spans both columns.
 		GridData listData = new GridData(GridData.FILL_HORIZONTAL);
 		listData.heightHint = convertVerticalDLUsToPixels(this.list, LIST_HEIGHT_IN_DLUS);
-		listData.horizontalSpan = numColumns;
+		//listData.horizontalSpan = numColumns;
 
 		this.list.setLayoutData(listData);
 		this.list.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e)
-			{
+			public void widgetSelected(SelectionEvent e) {
 				selectionChanged();
 			}
 		});
 
 		// Create a composite for the add and remove buttons and the input text field.
-		Composite addRemoveGroup = new Composite(this.top, SWT.NONE);
+		Composite addRemoveGroup = new Composite(main, SWT.NONE);
 
-		GridData addRemoveData = new GridData(GridData.FILL_HORIZONTAL);
-		addRemoveData.horizontalSpan = numColumns;
+		GridData addRemoveData = new GridData();//GridData.FILL_VERTICAL);
+		addRemoveData.verticalAlignment=SWT.TOP;
+		//addRemoveData.horizontalSpan = numColumns;
 		addRemoveGroup.setLayoutData(addRemoveData);
 
 		GridLayout addRemoveLayout = new GridLayout();
-		addRemoveLayout.numColumns = numColumns;
+		addRemoveLayout.numColumns = 1;
 		addRemoveLayout.marginHeight = 0;
 		addRemoveLayout.marginWidth = 0;
 		addRemoveGroup.setLayout(addRemoveLayout);
@@ -166,43 +180,44 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 		buttonGroup.setLayout(buttonLayout);
 
 		// Create the add button.
-		this.add = new Button(buttonGroup, SWT.NONE);
-		this.add.setText("Add"); 
-		this.add.addSelectionListener(new SelectionAdapter() { 
-			public void widgetSelected(SelectionEvent e)
-			{
-				add();
+		this.buttonAdd = new Button(buttonGroup, SWT.NONE);
+		this.buttonAdd.setText("Add..."); 
+		this.buttonAdd.addSelectionListener(new SelectionAdapter() { 
+			public void widgetSelected(SelectionEvent e) {
+				doAdd();
 			}
 		});
 
 		GridData addData = new GridData(GridData.FILL_HORIZONTAL);
-		addData.heightHint = convertVerticalDLUsToPixels(this.add, 14);
-		addData.widthHint = convertHorizontalDLUsToPixels(this.add, IDialogConstants.BUTTON_WIDTH);
-		this.add.setLayoutData(addData);
+		addData.widthHint = convertHorizontalDLUsToPixels(this.buttonAdd, IDialogConstants.BUTTON_WIDTH);
+		this.buttonAdd.setLayoutData(addData);
+		
+		// Create the edit button.
+		this.buttonEdit = new Button(buttonGroup, SWT.NONE);
+		this.buttonEdit.setEnabled(false);
+		this.buttonEdit.setText("Edit..."); 
+		this.buttonEdit.addSelectionListener(new SelectionAdapter() { 
+			public void widgetSelected(SelectionEvent e) {
+				doEdit();
+			}
+		});
+
+		GridData editData = new GridData(GridData.FILL_HORIZONTAL);
+		editData.widthHint = convertHorizontalDLUsToPixels(this.buttonAdd, IDialogConstants.BUTTON_WIDTH);
+		this.buttonEdit.setLayoutData(editData);
 
 		// Create the remove button.
-		this.remove = new Button(buttonGroup, SWT.NONE);
-		this.remove.setEnabled(false);
-		this.remove.setText("Remove");
-		this.remove.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e)
-			{
-				AddRemoveListFieldEditor.this.list.remove(AddRemoveListFieldEditor.this.list.getSelectionIndex());
-				selectionChanged();
+		this.buttonRemove = new Button(buttonGroup, SWT.NONE);
+		this.buttonRemove.setEnabled(false);
+		this.buttonRemove.setText("Remove");
+		this.buttonRemove.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				doRemove();
 			}
 		});
 		GridData removeData = new GridData(GridData.FILL_HORIZONTAL);
-		removeData.heightHint = convertVerticalDLUsToPixels(this.remove, 14);
-		removeData.widthHint = convertHorizontalDLUsToPixels(this.remove, IDialogConstants.BUTTON_WIDTH);
-		this.remove.setLayoutData(removeData);
-
-		// Create the text field.
-		this.textField = new Text(addRemoveGroup, SWT.BORDER);
-
-		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
-		textData.horizontalSpan = numColumns - 1;
-		textData.verticalAlignment = GridData.BEGINNING;
-		this.textField.setLayoutData(textData);
+		removeData.widthHint = convertHorizontalDLUsToPixels(this.buttonRemove, IDialogConstants.BUTTON_WIDTH);
+		this.buttonRemove.setLayoutData(removeData);
 	}
 
 	/***
@@ -252,22 +267,26 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 	/***
 	 * Adds the string in the text field to the list.
 	 */
-	void add() {
-		String tag = this.textField.getText();
-		if (tag != null && tag.length() > 0) {
-			
-			if (validator!=null ) {
-				String errorMessage=validator.validate(tag);
-				if (errorMessage!=null) {
-					MessageDialog.openError(new Shell(), "Ivalid item", errorMessage);
-					return;
-				}				
-			}
-
-			this.list.add(tag);
+	private void doAdd() {
+		InputDialog dialog=new InputDialog(parent.getShell(), "Text input", "Enter text", "", validator);
+		if (dialog.open()==Window.OK) {
+			list.add(dialog.getValue());
 		}
+	}
+	
+	private void doEdit() {
+		int selectedIndex=list.getSelectionIndex();
+		String str=this.list.getItem(selectedIndex);
 		
-		this.textField.setText(""); 
+		InputDialog dialog=new InputDialog(parent.getShell(), "Text input", "Enter text", str, validator);
+		if (dialog.open()==Window.OK) {
+			list.setItem(selectedIndex, dialog.getValue());
+		}
+	}
+	
+	private void doRemove() {
+		list.remove(list.getSelectionIndex());
+		selectionChanged();
 	}
 
 	/***
@@ -276,7 +295,7 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 	 */
 	public void setAddButtonText(String text)
 	{
-		this.add.setText(text);
+		this.buttonAdd.setText(text);
 	}
 
 	/***
@@ -285,7 +304,7 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 	 */
 	public void setRemoveButtonText(String text)
 	{
-		this.remove.setText(text);
+		this.buttonRemove.setText(text);
 	}
 
 	/***
@@ -337,6 +356,7 @@ public class AddRemoveListFieldEditor extends FieldEditor {
 	void selectionChanged()
 	{
 		int index = this.list.getSelectionIndex();
-		this.remove.setEnabled(index >= 0);
+		buttonRemove.setEnabled(index >= 0);
+		buttonEdit.setEnabled(index>=0);
 	}
 }
