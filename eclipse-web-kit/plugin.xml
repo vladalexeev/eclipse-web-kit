@@ -37,8 +37,14 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="com.eclipse.web.kit.preferences.WebKitPreferencePage"
-            id="com.eclipse.web.kit.preferences.WebKitPreferencePage"
+            category="com.eclipse.web.kit.preferences.WebKitPreferences"
+            class="com.eclipse.web.kit.preferences.HtmlPalettePreferences"
+            id="com.eclipse.web.kit.preferences.HtmlPalettePreferences"
+            name="Html palette">
+      </page>
+      <page
+            class="com.eclipse.web.kit.preferences.WebKitPreferences"
+            id="com.eclipse.web.kit.preferences.WebKitPreferences"
             name="Eclipse web kit">
       </page>
    </extension>
