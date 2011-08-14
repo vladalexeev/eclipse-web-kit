@@ -19,11 +19,11 @@ import com.eclipse.web.kit.Activator;
  * be accessed directly via the preference store.
  */
 
-public class WebKitPreferencePage
+public class HtmlPalettePreferences
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
-	public WebKitPreferencePage() {
+	public HtmlPalettePreferences() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 		setDescription("A demonstration of a preference page implementation");
