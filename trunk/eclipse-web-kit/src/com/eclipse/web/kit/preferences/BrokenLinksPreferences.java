@@ -17,15 +17,15 @@ public class BrokenLinksPreferences extends FieldEditorPreferencePage implements
 		public String isValid(String newText) {
 			int starIndex=newText.indexOf('*');
 			if (starIndex<0) {
-				return "String should contain '*'";
+				return "Template should contain '*'";
 			}
 			
 			if (starIndex==0) {
-				return "String should not start from '*'";
+				return "Template should not start from '*'";
 			}
 			
 			if (starIndex==newText.length()-1) {
-				return "String should not end to '*'";
+				return "Template should not end by '*'";
 			}
 			
 			return null;
@@ -44,7 +44,7 @@ public class BrokenLinksPreferences extends FieldEditorPreferencePage implements
 
 	@Override
 	protected void createFieldEditors() {
-		StringListFieldEditor templatesEditor=new StringListFieldEditor(PreferenceConstants.P_BROKEN_LINK_TEMPLATES, "Broken link templates", getFieldEditorParent());
+		StringListFieldEditor templatesEditor=new StringListFieldEditor(PreferenceConstants.P_BROKEN_LINK_TEMPLATES, "Templates for searching broken links", getFieldEditorParent());
 		templatesEditor.setValidator(templateValidator);
 		addField(templatesEditor);
 		
