@@ -9,5 +9,6 @@ public class PreferenceConstants {
 	public static final String P_TEMPLATE_ZOOM_IMAGE="templateZoomImage";
 	
 	public static final String P_BROKEN_LINK_TEMPLATES="brokenLinkTemplates";
+	public static final String P_BROKEN_LINK_IGNORE="brokenLinkIgnore";
 	
 }
