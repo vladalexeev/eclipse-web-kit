@@ -25,6 +25,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.P_TEMPLATE_ZOOM_IMAGE, 
 				"<a name=\"{largeImageFileName}\" href=\"javascript:showImage('{largeImageFile}', '{name}', {largeImageWidth}, {largeImageHeight}, '{description}')\">\n"+ 
 				"<img src=\"{smallImageFile}\" width=\"{smallImageWidth}\" height=\"{smallImageHeight}\" border=\"0\" alt=\"{name}\" title=\"{name}\" /></a>");
+		
+		store.setDefault(PreferenceConstants.P_BROKEN_LINK_TEMPLATES, 
+				"href=\"*\"\0src=\"*\"\0href=\"javascript:showImage('*'");
 	}
 
 }

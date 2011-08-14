@@ -1,4 +1,4 @@
-package com.eclipse.web.kit.preferences;
+package com.eclipse.web.kit.preferences.editors;
 
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.swt.SWT;
