@@ -1,9 +1,9 @@
 package com.eclipse.web.kit.preferences;
 
-import org.eclipse.jface.preference.*;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import com.eclipse.web.kit.Activator;
+import com.eclipse.web.kit.overlay.FieldEditorOverlayPage;
 import com.eclipse.web.kit.preferences.editors.MultiLineStringFieldEditor;
 
 /**
@@ -20,9 +20,7 @@ import com.eclipse.web.kit.preferences.editors.MultiLineStringFieldEditor;
  * be accessed directly via the preference store.
  */
 
-public class HtmlPalettePreferences
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+public class HtmlPalettePreferences extends FieldEditorOverlayPage implements IWorkbenchPreferencePage {
 
 	public HtmlPalettePreferences() {
 		super(GRID);
@@ -45,6 +43,11 @@ public class HtmlPalettePreferences
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
+	}
+
+	@Override
+	protected String getPageId() {
+		return PreferenceConstants.PAGE_ID_HTML_PALETTE;
 	}
 	
 }
