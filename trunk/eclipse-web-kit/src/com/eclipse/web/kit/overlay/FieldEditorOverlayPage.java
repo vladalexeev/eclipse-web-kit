@@ -26,6 +26,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbenchPropertyPage;
 
 public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage implements IWorkbenchPropertyPage {
@@ -43,9 +44,11 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage i
 	private IAdaptable element;
 
 	// Additional buttons for property pages
-	private Button useWorkspaceSettingsButton,
-	useProjectSettingsButton,
-	configureButton;
+	//private Button configureButton;
+	
+	private Button checkboxProjectSpecific;
+	
+	private Link configureButton; 
 
 	// Overlay preference store for property pages
 	private IPreferenceStore overlayStore;
@@ -179,50 +182,33 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage i
 		layout.marginWidth = 0;
 		comp.setLayout(layout);
 		comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		Composite radioGroup = new Composite(comp, SWT.NONE);
-		radioGroup.setLayout(new GridLayout());
-		radioGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		useWorkspaceSettingsButton = createRadioButton(radioGroup, "Use workspace settings"); 
-		useProjectSettingsButton = createRadioButton(radioGroup, "Use project settings"); 
-		configureButton = new Button(comp, SWT.PUSH);
-		configureButton.setText("Configure workspace settings"); 
+		
+		checkboxProjectSpecific=new Button(comp, SWT.CHECK);
+		checkboxProjectSpecific.setText("Enable project specific settings");
+		checkboxProjectSpecific.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		checkboxProjectSpecific.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				updateFieldEditors();
+			}
+		});
+		
+		configureButton = new Link(comp, SWT.NONE);
+		configureButton.setText("<a>Configure Workspace Settings...</a>"); 
 		configureButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				configureWorkspaceSettings();
 			}
 		});
-		// Set workspace/project radio buttons
+
 		try {
 			String use =
 					((IResource) getElement()).getPersistentProperty(
 							new QualifiedName(pageId, USEPROJECTSETTINGS));
-			if (TRUE.equals(use)) {
-				useProjectSettingsButton.setSelection(true);
-				configureButton.setEnabled(false);
-			} else
-				useWorkspaceSettingsButton.setSelection(true);
+			checkboxProjectSpecific.setSelection(TRUE.equals(use));
 		} catch (CoreException e) {
-			useWorkspaceSettingsButton.setSelection(true);
+			checkboxProjectSpecific.setSelection(false);
 		}
-	}
-
-	/**
-	 * Convenience method creating a radio button
-	 * @param parent - the parent composite
-	 * @param label - the button label
-	 * @return - the new button
-	 */
-	private Button createRadioButton(Composite parent, String label) {
-		final Button button = new Button(parent, SWT.RADIO);
-		button.setText(label);
-		button.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				configureButton.setEnabled(
-						button == useWorkspaceSettingsButton);
-				updateFieldEditors();
-			}
-		});
-		return button;
 	}
 
 	/**
@@ -241,7 +227,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage i
 	 */
 	private void updateFieldEditors() {
 		// We iterate through all field editors 
-		boolean enabled = useProjectSettingsButton.getSelection();
+		boolean enabled = checkboxProjectSpecific.getSelection();
 		updateFieldEditors(enabled);
 	}
 
@@ -272,8 +258,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage i
 			// Save state of radiobuttons in project properties
 			IResource resource = (IResource) getElement();
 			try {
-				String value =
-						(useProjectSettingsButton.getSelection()) ? TRUE : FALSE;
+				String value = (checkboxProjectSpecific.getSelection()) ? TRUE : FALSE;
 				resource.setPersistentProperty(
 						new QualifiedName(pageId, USEPROJECTSETTINGS),
 						value);
@@ -291,8 +276,7 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage i
 	 */
 	protected void performDefaults() {
 		if (isPropertyPage()) {
-			useWorkspaceSettingsButton.setSelection(true);
-			useProjectSettingsButton.setSelection(false);
+			checkboxProjectSpecific.setSelection(false);
 			configureButton.setEnabled(true);
 			updateFieldEditors();
 		}
