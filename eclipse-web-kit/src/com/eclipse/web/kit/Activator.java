@@ -1,8 +1,14 @@
 package com.eclipse.web.kit;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import com.eclipse.web.kit.overlay.FieldEditorOverlayPage;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -57,5 +63,33 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
+	}
+	
+	public static String getOverlayedPreferenceValue(IResource resource, String pageId, String name) {
+		IProject project;
+		if (resource instanceof IProject) {
+			project=(IProject) resource;
+		} else {
+			project=resource.getProject();
+		}
+		
+		if (useProjectSettings(project, pageId)) {
+			return getProperty(resource, pageId, name);
+		} else {
+			return Activator.getDefault().getPreferenceStore().getString(name);
+		}
+	}
+	
+	private static boolean useProjectSettings(IResource resource, String pageId) {
+		String use = getProperty(resource, pageId,	FieldEditorOverlayPage.USEPROJECTSETTINGS);
+		return "true".equals(use);
+	}
+	
+	private static String getProperty(IResource resource, String pageId, String key) {
+		try {
+			return resource.getPersistentProperty(new QualifiedName(pageId, key));
+		} catch (CoreException e) {
+		}
+		return null;
 	}
 }

@@ -8,6 +8,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.part.*;
 import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
@@ -191,6 +192,10 @@ public class HtmlPaletteView extends ViewPart {
 		return null;
 	}
 	
+	public IProject getActiveProject() {
+		return ((IFileEditorInput)getActiveEditor().getEditorInput()).getFile().getProject();
+	}
+	
 	private IEditorPart getActiveEditor() {
 		if (getActiveWorkbenchWindow()!=null) {
 			if (getActiveWorkbenchWindow().getActivePage()!=null) {
@@ -272,7 +277,8 @@ public class HtmlPaletteView extends ViewPart {
 				resultText=resultHyperlink;
 			}
 			
-			String template=Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEMPLATE_LINK);
+			String template=Activator.getOverlayedPreferenceValue(getActiveProject(), 
+					PreferenceConstants.PAGE_ID_HTML_PALETTE, PreferenceConstants.P_TEMPLATE_LINK);
 			
 			HashMap<String,String> params=new HashMap<String, String>();
 			params.put("hyperlink", resultHyperlink);
@@ -296,7 +302,8 @@ public class HtmlPaletteView extends ViewPart {
 		
 		ImageInfo imageInfo=ImageUtil.getImageInfo(selectedImageFileName);
 		
-		String template=Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEMPLATE_IMAGE);
+		String template=Activator.getOverlayedPreferenceValue(getActiveProject(), 
+				PreferenceConstants.PAGE_ID_HTML_PALETTE, PreferenceConstants.P_TEMPLATE_IMAGE);
 		
 		HashMap<String, String> params=new HashMap<String, String>();
 		params.put("imageFile", imageRelativePath);
@@ -323,7 +330,8 @@ public class HtmlPaletteView extends ViewPart {
 			ImageInfo imageInfoLarge=ImageUtil.getImageInfo(absoluteLargeImageFile);
 			ImageInfo imageInfoSmall=ImageUtil.getImageInfo(absoluteSmallImageFile);
 			
-			String template=Activator.getDefault().getPreferenceStore().getString(PreferenceConstants.P_TEMPLATE_ZOOM_IMAGE);
+			String template=Activator.getOverlayedPreferenceValue(getActiveProject(), 
+					PreferenceConstants.PAGE_ID_HTML_PALETTE, PreferenceConstants.P_TEMPLATE_ZOOM_IMAGE);
 			
 			HashMap<String, String> params=new HashMap<String, String>();
 			params.put("largeImageFileName", largeImageFileName);

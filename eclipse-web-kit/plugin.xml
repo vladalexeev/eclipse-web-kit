@@ -90,5 +90,30 @@
             type="org.eclipse.core.resources.problemmarker">
       </super>
    </extension>
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            category="com.eclipse.web.kit.preferences.WebKitPreferences"
+            class="com.eclipse.web.kit.preferences.HtmlPalettePreferences"
+            id="com.eclipse.web.kit.preferences.HtmlPalettePreferences"
+            name="Html palette properties"
+            nameFilter="*">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            class="com.eclipse.web.kit.preferences.WebKitPreferences"
+            id="com.eclipse.web.kit.preferences.WebKitPreferences"
+            name="Eclipse Web Kit">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+   </extension>
 
 </plugin>
