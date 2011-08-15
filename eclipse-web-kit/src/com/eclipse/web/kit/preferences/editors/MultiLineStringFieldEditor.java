@@ -89,38 +89,44 @@ public class MultiLineStringFieldEditor extends FieldEditor {
 	}
 
 	protected void valueChanged() {
-        setPresentsDefaultValue(false);
-        boolean oldState = isValid;
-        refreshValidState();
+		setPresentsDefaultValue(false);
+		boolean oldState = isValid;
+		refreshValidState();
 
-        if (isValid != oldState) {
+		if (isValid != oldState) {
 			fireStateChanged(IS_VALID, oldState, isValid);
 		}
 
-        String newValue = textField.getText();
-        if (!newValue.equals(oldValue)) {
-            fireValueChanged(VALUE, oldValue, newValue);
-            oldValue = newValue;
-        }
-    }
-	
-	 public Text getTextControl(Composite parent) {
-	        if (textField == null) {
-	            textField = new Text(parent,
-	            		SWT.MULTI
-	                    | SWT.BORDER
-	                    | SWT.H_SCROLL
-	                    | SWT.V_SCROLL);
-	            textField.setFont(parent.getFont());
-	            
-	            textField.addDisposeListener(new DisposeListener() {
-	                public void widgetDisposed(DisposeEvent event) {
-	                    textField = null;
-	                }
-	            });
-	        } else {
-	            checkParent(textField, parent);
-	        }
-	        return textField;
-	    }
+		String newValue = textField.getText();
+		if (!newValue.equals(oldValue)) {
+			fireValueChanged(VALUE, oldValue, newValue);
+			oldValue = newValue;
+		}
+	}
+
+	public Text getTextControl(Composite parent) {
+		if (textField == null) {
+			textField = new Text(parent,
+					SWT.MULTI
+					| SWT.BORDER
+					| SWT.H_SCROLL
+					| SWT.V_SCROLL);
+			textField.setFont(parent.getFont());
+
+			textField.addDisposeListener(new DisposeListener() {
+				public void widgetDisposed(DisposeEvent event) {
+					textField = null;
+				}
+			});
+		} else {
+			checkParent(textField, parent);
+		}
+		return textField;
+	}
+
+	@Override
+	public void setEnabled(boolean enabled, Composite parent) {
+		super.setEnabled(enabled, parent);
+		textField.setEnabled(enabled);
+	}
 }
