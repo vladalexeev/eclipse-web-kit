@@ -277,8 +277,7 @@ public class HtmlPaletteView extends ViewPart {
 				resultText=resultHyperlink;
 			}
 			
-			String template=Activator.getOverlayedPreferenceValue(getActiveProject(), 
-					PreferenceConstants.PAGE_ID_HTML_PALETTE, PreferenceConstants.P_TEMPLATE_LINK);
+			String template=Activator.getOverlayedPreferenceValue(getActiveProject(), PreferenceConstants.Q_TEMPLATE_LINK);
 			
 			HashMap<String,String> params=new HashMap<String, String>();
 			params.put("hyperlink", resultHyperlink);
@@ -302,8 +301,7 @@ public class HtmlPaletteView extends ViewPart {
 		
 		ImageInfo imageInfo=ImageUtil.getImageInfo(selectedImageFileName);
 		
-		String template=Activator.getOverlayedPreferenceValue(getActiveProject(), 
-				PreferenceConstants.PAGE_ID_HTML_PALETTE, PreferenceConstants.P_TEMPLATE_IMAGE);
+		String template=Activator.getOverlayedPreferenceValue(getActiveProject(), PreferenceConstants.Q_TEMPLATE_IMAGE);
 		
 		HashMap<String, String> params=new HashMap<String, String>();
 		params.put("imageFile", imageRelativePath);
@@ -330,8 +328,7 @@ public class HtmlPaletteView extends ViewPart {
 			ImageInfo imageInfoLarge=ImageUtil.getImageInfo(absoluteLargeImageFile);
 			ImageInfo imageInfoSmall=ImageUtil.getImageInfo(absoluteSmallImageFile);
 			
-			String template=Activator.getOverlayedPreferenceValue(getActiveProject(), 
-					PreferenceConstants.PAGE_ID_HTML_PALETTE, PreferenceConstants.P_TEMPLATE_ZOOM_IMAGE);
+			String template=Activator.getOverlayedPreferenceValue(getActiveProject(), PreferenceConstants.Q_TEMPLATE_ZOOM_IMAGE);
 			
 			HashMap<String, String> params=new HashMap<String, String>();
 			params.put("largeImageFileName", largeImageFileName);

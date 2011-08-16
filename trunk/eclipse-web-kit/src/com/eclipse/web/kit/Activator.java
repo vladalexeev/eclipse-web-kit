@@ -65,7 +65,7 @@ public class Activator extends AbstractUIPlugin {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 	
-	public static String getOverlayedPreferenceValue(IResource resource, String pageId, String name) {
+	public static String getOverlayedPreferenceValue(IResource resource, QualifiedName qname) {
 		IProject project;
 		if (resource instanceof IProject) {
 			project=(IProject) resource;
@@ -73,21 +73,21 @@ public class Activator extends AbstractUIPlugin {
 			project=resource.getProject();
 		}
 		
-		if (useProjectSettings(project, pageId)) {
-			return getProperty(resource, pageId, name);
+		if (useProjectSettings(project, qname.getQualifier())) {
+			return getProperty(resource, qname);
 		} else {
-			return Activator.getDefault().getPreferenceStore().getString(name);
+			return Activator.getDefault().getPreferenceStore().getString(qname.getLocalName());
 		}
 	}
 	
 	private static boolean useProjectSettings(IResource resource, String pageId) {
-		String use = getProperty(resource, pageId,	FieldEditorOverlayPage.USEPROJECTSETTINGS);
+		String use = getProperty(resource, new QualifiedName(pageId,FieldEditorOverlayPage.USEPROJECTSETTINGS));
 		return "true".equals(use);
 	}
 	
-	private static String getProperty(IResource resource, String pageId, String key) {
+	private static String getProperty(IResource resource, QualifiedName qname) {
 		try {
-			return resource.getPersistentProperty(new QualifiedName(pageId, key));
+			return resource.getPersistentProperty(qname);
 		} catch (CoreException e) {
 		}
 		return null;

@@ -76,6 +76,8 @@ public class StringListFieldEditor extends FieldEditor {
 	private String separator = DEFAULT_SEPARATOR;
 
 	private IInputValidator validator=null;
+	
+	private boolean enabled=true;
 
 	/***
 	 * Creates a string field editor of unlimited width. Use the method <code>setTextLimit</code> to limit the text.
@@ -353,10 +355,19 @@ public class StringListFieldEditor extends FieldEditor {
 	/***
 	 * Sets the enablement of the remove button depending on the selection in the list.
 	 */
-	void selectionChanged()
-	{
+	void selectionChanged()	{
 		int index = this.list.getSelectionIndex();
-		buttonRemove.setEnabled(index >= 0);
-		buttonEdit.setEnabled(index>=0);
+		list.setEnabled(enabled);
+		buttonAdd.setEnabled(enabled);
+		buttonRemove.setEnabled(enabled && index >= 0);
+		buttonEdit.setEnabled(enabled && index>=0);
+	}
+
+	@Override
+	public void setEnabled(boolean enabled, Composite parent) {
+		super.setEnabled(enabled, parent);
+		
+		this.enabled=enabled;
+		selectionChanged();
 	}
 }

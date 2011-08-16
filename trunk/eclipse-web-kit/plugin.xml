@@ -114,6 +114,28 @@
             </instanceof>
          </enabledWhen>
       </page>
+      <page
+            category="com.eclipse.web.kit.preferences.WebKitPreferences"
+            class="com.eclipse.web.kit.preferences.BrokenLinksPreferences"
+            id="com.eclipse.web.kit.preferences.BrokenLinksPreferences"
+            name="Broken links">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            category="com.eclipse.web.kit.preferences.WebKitPreferences"
+            class="com.eclipse.web.kit.preferences.IgnorePreferences"
+            id="com.eclipse.web.kit.preferences.IgnorePreferences"
+            name="Ignore lists">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
    </extension>
 
 </plugin>

@@ -1,14 +1,14 @@
 package com.eclipse.web.kit.preferences;
 
 import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 import com.eclipse.web.kit.Activator;
+import com.eclipse.web.kit.overlay.FieldEditorOverlayPage;
 import com.eclipse.web.kit.preferences.editors.StringListFieldEditor;
 
-public class BrokenLinksPreferences extends FieldEditorPreferencePage implements
+public class BrokenLinksPreferences extends FieldEditorOverlayPage implements
 		IWorkbenchPreferencePage {
 	
 	private IInputValidator templateValidator=new IInputValidator() {
@@ -35,7 +35,6 @@ public class BrokenLinksPreferences extends FieldEditorPreferencePage implements
 	public BrokenLinksPreferences() {
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
-		//setDescription("Broken links preferences");
 	}
 
 	@Override
@@ -47,9 +46,11 @@ public class BrokenLinksPreferences extends FieldEditorPreferencePage implements
 		StringListFieldEditor templatesEditor=new StringListFieldEditor(PreferenceConstants.P_BROKEN_LINK_TEMPLATES, "Templates for searching broken links", getFieldEditorParent());
 		templatesEditor.setValidator(templateValidator);
 		addField(templatesEditor);
-		
-		StringListFieldEditor ignoreEditor=new StringListFieldEditor(PreferenceConstants.P_BROKEN_LINK_IGNORE, "Ignored broken links", getFieldEditorParent());
-		addField(ignoreEditor);
+	}
+
+	@Override
+	protected String getPageId() {
+		return PreferenceConstants.PAGE_ID_BROKEN_LINKS;
 	}
 
 }
