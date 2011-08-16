@@ -32,27 +32,20 @@ public class FileUtil {
 		return result;
 	}
 	
-	public static String createRelativePath(String baseFilePath, String targetFilePath) {
-		File targetFile=new File(targetFilePath);
-		if (!targetFile.isAbsolute()) {
-			return targetFilePath;
-		}
-		
-		List<String> baseList=splitPathToTokens(baseFilePath);
-		List<String> targetList=splitPathToTokens(targetFilePath);
-		int baseListMax=baseList.size()-1;
-		int targetListMax=targetList.size()-1;
+	private static String createRelativePath(List<String> basePath, List<String> targetFilePath) {
+		int baseListMax=basePath.size();
+		int targetListMax=targetFilePath.size()-1;
 		
 		String result="";
 		
 		int index=0;
 		while (index<Math.min(baseListMax,targetListMax) &&
-				baseList.get(index).equals(targetList.get(index))) {
+				basePath.get(index).equals(targetFilePath.get(index))) {
 			index++;
 		}
 
 		while (index<Math.min(baseListMax,targetListMax)) {			
-			result="../"+result+targetList.get(index)+"/";
+			result="../"+result+targetFilePath.get(index)+"/";
 			index++;
 		}
 		
@@ -62,13 +55,80 @@ public class FileUtil {
 		}
 		
 		while (index<targetListMax) {
-			result+=targetList.get(index)+"/";
+			result+=targetFilePath.get(index)+"/";
 			index++;
 		}
 		
-		result+=targetList.get(targetListMax);
+		result+=targetFilePath.get(targetListMax);
 		
 		return result;
+	}
+	
+	/**
+	 * Create relative path from source file path and target file path
+	 * @param baseFilePath source file path
+	 * @param targetFilePath target file path
+	 * @return
+	 */
+	public static String createRelativePath(String baseFilePath, String targetFilePath) {
+		File targetFile=new File(targetFilePath);
+		if (!targetFile.isAbsolute()) {
+			return targetFilePath;
+		}
+		
+		List<String> baseList=splitPathToTokens(baseFilePath);
+		List<String> targetList=splitPathToTokens(targetFilePath);
+		
+		baseList.remove(baseList.size()-1);
+		return createRelativePath(baseList, targetList);
+		
+//		int baseListMax=baseList.size()-1;
+//		int targetListMax=targetList.size()-1;
+//		
+//		String result="";
+//		
+//		int index=0;
+//		while (index<Math.min(baseListMax,targetListMax) &&
+//				baseList.get(index).equals(targetList.get(index))) {
+//			index++;
+//		}
+//
+//		while (index<Math.min(baseListMax,targetListMax)) {			
+//			result="../"+result+targetList.get(index)+"/";
+//			index++;
+//		}
+//		
+//		while (index<baseListMax) {
+//			index++;
+//			result="../"+result;
+//		}
+//		
+//		while (index<targetListMax) {
+//			result+=targetList.get(index)+"/";
+//			index++;
+//		}
+//		
+//		result+=targetList.get(targetListMax);
+//		
+//		return result;
+	}
+	
+	/**
+	 * Create realtive path using source directory path and target file path
+	 * @param basePath source directory path
+	 * @param targetFilePath target file path
+	 * @return
+	 */
+	public static String createRelativePath2(String basePath, String targetFilePath) {
+		File targetFile=new File(targetFilePath);
+		if (!targetFile.isAbsolute()) {
+			return targetFilePath;
+		}
+		
+		List<String> baseList=splitPathToTokens(basePath);
+		List<String> targetList=splitPathToTokens(targetFilePath);
+		
+		return createRelativePath(baseList, targetList);
 	}
 	
 	public static String createAbsolutePath(String baseDirPath, String relativePath) {

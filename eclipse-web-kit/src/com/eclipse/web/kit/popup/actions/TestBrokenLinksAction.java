@@ -2,6 +2,7 @@ package com.eclipse.web.kit.popup.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
@@ -19,6 +20,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
+import com.eclipse.web.kit.Activator;
+import com.eclipse.web.kit.preferences.PreferenceConstants;
 import com.eclipse.web.kit.util.FileLoader;
 import com.eclipse.web.kit.util.FileUtil;
 import com.eclipse.web.kit.util.LinkExtractor;
@@ -28,13 +31,10 @@ import com.eclipse.web.kit.util.LinkPattern;
 public class TestBrokenLinksAction implements IObjectActionDelegate {
 
 	private IProject project;
-	private LinkPattern[] linkPatterns=new LinkPattern[]{
-		new LinkPattern("href=\"", "\""),
-		new LinkPattern("src=\"", "\""),
-		new LinkPattern("href=\"javascript:showImage('", "'")
-	};
 	
 	private class TestBrokenLinksJob extends Job {
+		private LinkPattern[] linkPatterns;
+		private HashSet<String> ignoredLinks;
 
 		public TestBrokenLinksJob(String name) {
 			super(name);
@@ -64,11 +64,12 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 								}
 								
 								File linkedFile=new File(FileUtil.createAbsolutePath(directoryAbsolutePath, link.getLinkFile()));
-								if (!linkedFile.exists()) {
+								String projectRelativeFileName=FileUtil.createRelativePath2(projectFolder, linkedFile.toString());
+								if (!linkedFile.exists() && !ignoredLinks.contains(projectRelativeFileName)) {
 									IFile iFile=project.getFile(relativeTargetFile.toString());
 									try {
 										IMarker marker=iFile.createMarker("eclipse-web-kit.brokenlink");
-										marker.setAttribute(IMarker.MESSAGE, "Broken link - "+link.getLinkFile());
+										marker.setAttribute(IMarker.MESSAGE, "Broken link - "+link.getLinkFile()+" == "+projectRelativeFileName);
 										marker.setAttribute(IMarker.CHAR_START, link.getBeginIndex());
 										marker.setAttribute(IMarker.CHAR_END, link.getEndIndex());
 										marker.setAttribute(IMarker.LINE_NUMBER, link.getLineNumber());
@@ -79,9 +80,7 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 							}
 						} catch (IOException e) {
 							e.printStackTrace();
-						}
-						
-						
+						}						
 					}
 				}
 			}
@@ -95,6 +94,24 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 				project.deleteMarkers("eclipse-web-kit.brokenlink", true, IResource.DEPTH_INFINITE);
 			} catch (CoreException e) {
 				e.printStackTrace();
+			}
+			
+			String[] patternStrs=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_TEMPLATES).split("\0");
+			
+			linkPatterns=new LinkPattern[patternStrs.length];
+			for (int i=0; i<patternStrs.length; i++) {
+				String p=patternStrs[i];
+				int index=p.indexOf('*');
+				String prefix=p.substring(0,index);
+				String postfix=p.substring(index+1);
+				linkPatterns[i]=new LinkPattern(prefix, postfix);
+			}
+			
+			String[] ignoredStrs=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_IGNORE).split("\0");			
+			ignoredLinks=new HashSet<String>();
+			
+			for (String str:ignoredStrs) {
+				ignoredLinks.add(str);
 			}
 			
 			processSubdirectories(monitor, project, "");
