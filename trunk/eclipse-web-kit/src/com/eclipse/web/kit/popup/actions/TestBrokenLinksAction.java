@@ -96,7 +96,11 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 				e.printStackTrace();
 			}
 			
-			String[] patternStrs=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_TEMPLATES).split("\0");
+			String patterns=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_TEMPLATES);
+			String[] patternStrs=new String[]{};
+			if (patterns!=null) {
+				patternStrs=patterns.split("\0");
+			}
 			
 			linkPatterns=new LinkPattern[patternStrs.length];
 			for (int i=0; i<patternStrs.length; i++) {
@@ -107,11 +111,15 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 				linkPatterns[i]=new LinkPattern(prefix, postfix);
 			}
 			
-			String[] ignoredStrs=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_IGNORE).split("\0");			
 			ignoredLinks=new HashSet<String>();
+			String ignoredValue=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_IGNORE);
 			
-			for (String str:ignoredStrs) {
-				ignoredLinks.add(str);
+			if (ignoredValue!=null) {
+				String[] ignoredStrs=ignoredValue.split("\0");			
+
+				for (String str:ignoredStrs) {
+					ignoredLinks.add(str);
+				}
 			}
 			
 			processSubdirectories(monitor, project, "");
