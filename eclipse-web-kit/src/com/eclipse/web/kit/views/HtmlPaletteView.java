@@ -8,7 +8,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.part.*;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextSelection;
@@ -28,6 +27,7 @@ import com.eclipse.web.kit.preferences.PreferenceConstants;
 import com.eclipse.web.kit.util.FileUtil;
 import com.eclipse.web.kit.util.ImageInfo;
 import com.eclipse.web.kit.util.ImageUtil;
+import com.eclipse.web.kit.util.SwtUtil;
 import com.eclipse.web.kit.util.TemplateUtil;
 
 
@@ -144,7 +144,7 @@ public class HtmlPaletteView extends ViewPart {
 				ISelection selection = viewer.getSelection();
 				String item = (String) ((IStructuredSelection)selection).getFirstElement();
 				
-				IEditorPart editor=getActiveEditor();				
+				IEditorPart editor=SwtUtil.getActiveEditor();				
 				if (editor!=null && editor instanceof ITextEditor) {				
 					if (item.equals(ITEM_LINK)) {
 						doActionLink();
@@ -184,41 +184,10 @@ public class HtmlPaletteView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 	
-	private IWorkbenchWindow getActiveWorkbenchWindow() {
-		if (PlatformUI.getWorkbench()!=null) {
-			return PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		}
-		
-		return null;
-	}
 	
-	public IProject getActiveProject() {
-		return ((IFileEditorInput)getActiveEditor().getEditorInput()).getFile().getProject();
-	}
-	
-	private IEditorPart getActiveEditor() {
-		if (getActiveWorkbenchWindow()!=null) {
-			if (getActiveWorkbenchWindow().getActivePage()!=null) {
-				return getActiveWorkbenchWindow().getActivePage().getActiveEditor();
-			}
-		}
-		
-		return null;
-	}
-	
-	private String getActiveEditorFileName() {
-		IEditorInput editorInput = getActiveEditor().getEditorInput();
-		String documentFileName=null;
-		if (editorInput instanceof IFileEditorInput) {
-			IFileEditorInput fileEditorInput=(IFileEditorInput) editorInput;
-			documentFileName=fileEditorInput.getFile().getLocation().toString();
-		}
-		
-		return documentFileName;
-	}
 	
 	private String getActiveSelectionText() {
-		IEditorPart editor=getActiveEditor();
+		IEditorPart editor=SwtUtil.getActiveEditor();
 		
 		if (editor!=null && editor instanceof ITextEditor) {
 			ITextEditor textEditor = (ITextEditor) editor;
@@ -230,7 +199,7 @@ public class HtmlPaletteView extends ViewPart {
 	}
 	
 	private void addTextToActiveEditor(String text) {
-		IEditorPart editor=getActiveEditor();
+		IEditorPart editor=SwtUtil.getActiveEditor();
 		
 		if (editor!=null && editor instanceof ITextEditor) {
 			IEditorInput editorInput = editor.getEditorInput();
@@ -247,7 +216,7 @@ public class HtmlPaletteView extends ViewPart {
 	        TextSelection newSelection=new TextSelection(sel.getOffset()+text.length(), 0);
 	        textEditor.getSelectionProvider().setSelection(newSelection);
 	        
-	        getActiveWorkbenchWindow().getActivePage().getActiveEditor().setFocus();
+	        SwtUtil.getActiveWorkbenchWindow().getActivePage().getActiveEditor().setFocus();
 		}
 	}
 	
@@ -255,7 +224,7 @@ public class HtmlPaletteView extends ViewPart {
 
 	
 	private void doActionLink() {
-		LinkDialog dialog=new LinkDialog(getActiveWorkbenchWindow().getShell());
+		LinkDialog dialog=new LinkDialog(SwtUtil.getActiveWorkbenchWindow().getShell());
 		
 		String selectionText=getActiveSelectionText();
 		dialog.setText(selectionText);
@@ -269,7 +238,7 @@ public class HtmlPaletteView extends ViewPart {
 			String resultHyperlink=dialog.getResultHyperlink();
 			
 			if (!resultHyperlink.startsWith("http://")) {
-				String documentFileName=getActiveEditorFileName();
+				String documentFileName=SwtUtil.getActiveEditorFileName();
 				resultHyperlink=FileUtil.createRelativePath(documentFileName, resultHyperlink);
 			}
 			
@@ -277,7 +246,7 @@ public class HtmlPaletteView extends ViewPart {
 				resultText=resultHyperlink;
 			}
 			
-			String template=Activator.getOverlayedPreferenceValue(getActiveProject(), PreferenceConstants.Q_TEMPLATE_LINK);
+			String template=Activator.getOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_TEMPLATE_LINK);
 			
 			HashMap<String,String> params=new HashMap<String, String>();
 			params.put("hyperlink", resultHyperlink);
@@ -290,18 +259,18 @@ public class HtmlPaletteView extends ViewPart {
 	}
 	
 	private void doActionImage() {
-		String selectedImageFileName=FileUtil.selectImageFile(getActiveWorkbenchWindow().getShell());
+		String selectedImageFileName=FileUtil.selectImageFile(SwtUtil.getActiveWorkbenchWindow().getShell());
 		
 		if (selectedImageFileName==null) {
 			return;
 		}
 
-		String documentFileName=getActiveEditorFileName();
+		String documentFileName=SwtUtil.getActiveEditorFileName();
 		String imageRelativePath=FileUtil.createRelativePath(documentFileName, selectedImageFileName);
 		
 		ImageInfo imageInfo=ImageUtil.getImageInfo(selectedImageFileName);
 		
-		String template=Activator.getOverlayedPreferenceValue(getActiveProject(), PreferenceConstants.Q_TEMPLATE_IMAGE);
+		String template=Activator.getOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_TEMPLATE_IMAGE);
 		
 		HashMap<String, String> params=new HashMap<String, String>();
 		params.put("imageFile", imageRelativePath);
@@ -313,10 +282,10 @@ public class HtmlPaletteView extends ViewPart {
 	}
 	
 	private void doActionZoomImage() {
-		ZoomImageDialog dialog=new ZoomImageDialog(getActiveWorkbenchWindow().getShell());
+		ZoomImageDialog dialog=new ZoomImageDialog(SwtUtil.getActiveWorkbenchWindow().getShell());
 		
 		if (dialog.open()) {
-			String documentFileName=getActiveEditorFileName();
+			String documentFileName=SwtUtil.getActiveEditorFileName();
 			String absoluteLargeImageFile=dialog.getResultLargeImageFile();
 			String relativeLargeImageFile=FileUtil.createRelativePath(documentFileName, absoluteLargeImageFile);
 			String largeImageFileName=FileUtil.getFileNameWithoutExt(absoluteLargeImageFile);
@@ -328,7 +297,7 @@ public class HtmlPaletteView extends ViewPart {
 			ImageInfo imageInfoLarge=ImageUtil.getImageInfo(absoluteLargeImageFile);
 			ImageInfo imageInfoSmall=ImageUtil.getImageInfo(absoluteSmallImageFile);
 			
-			String template=Activator.getOverlayedPreferenceValue(getActiveProject(), PreferenceConstants.Q_TEMPLATE_ZOOM_IMAGE);
+			String template=Activator.getOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_TEMPLATE_ZOOM_IMAGE);
 			
 			HashMap<String, String> params=new HashMap<String, String>();
 			params.put("largeImageFileName", largeImageFileName);

@@ -172,6 +172,8 @@ public class LinkDialog extends Dialog {
 		fileDialog.setFilterNames(new String[]{"All files"});
 		
 		String selectedFileName=fileDialog.open();
-		textHyperlink.setText(selectedFileName);
+		if (selectedFileName!=null) {
+			textHyperlink.setText(selectedFileName);
+		}
 	}
 }
