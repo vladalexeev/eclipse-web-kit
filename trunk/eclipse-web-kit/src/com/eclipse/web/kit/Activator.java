@@ -9,6 +9,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.eclipse.web.kit.overlay.FieldEditorOverlayPage;
+import com.eclipse.web.kit.preferences.PreferenceConstants;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -73,7 +74,7 @@ public class Activator extends AbstractUIPlugin {
 			project=resource.getProject();
 		}
 		
-		if (useProjectSettings(project, qname.getQualifier())) {
+		if (useProjectSettings(project, qname.getQualifier()) || qname.getLocalName().equals(PreferenceConstants.PAGE_ID_INTERNAL)) {
 			return getProperty(resource, qname);
 		} else {
 			return Activator.getDefault().getPreferenceStore().getString(qname.getLocalName());
@@ -91,5 +92,13 @@ public class Activator extends AbstractUIPlugin {
 		} catch (CoreException e) {
 		}
 		return null;
+	}
+	
+	public static void setOverlayedPreferenceValue(IResource resource, QualifiedName qname, String value) {
+		try {
+			resource.setPersistentProperty(qname, value);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 	}
 }

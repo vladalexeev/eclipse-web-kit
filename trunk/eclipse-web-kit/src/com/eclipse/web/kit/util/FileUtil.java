@@ -8,6 +8,9 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
+import com.eclipse.web.kit.Activator;
+import com.eclipse.web.kit.preferences.PreferenceConstants;
+
 public class FileUtil {
 	private static List<String> splitPathToTokens(String path) {
 		ArrayList<String> result=new ArrayList<String>();
@@ -181,11 +184,20 @@ public class FileUtil {
 		}
 	}
 	
+	public static String getFilePath(String fileName) {
+		return new File(fileName).getParent();
+	}
+	
 	public static String selectImageFile(Shell shell) {
 		FileDialog fileDialog=new FileDialog(shell, SWT.OPEN);
 		fileDialog.setFilterExtensions(new String[]{"*.jpg*;.png;*.gif", "*.*"});
 		fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
+		fileDialog.setFilterPath(Activator.getOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_LAST_IMAGE_PATH));
 		String selectedImageFileName=fileDialog.open();
+		
+		if (selectedImageFileName!=null) {
+			Activator.setOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_LAST_IMAGE_PATH, getFilePath(selectedImageFileName));
+		}
 		return selectedImageFileName;
 	}
 	
@@ -193,7 +205,12 @@ public class FileUtil {
 		FileDialog fileDialog=new FileDialog(shell, SWT.OPEN);
 		fileDialog.setFilterExtensions(new String[]{"*.*"});
 		fileDialog.setFilterNames(new String[]{"All files"});
+		fileDialog.setFilterPath(Activator.getOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_LAST_LINK_PATH));
 		String selectedFileName=fileDialog.open();
+		
+		if (selectedFileName!=null) {
+			Activator.setOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_LAST_LINK_PATH, getFilePath(selectedFileName));
+		}	
 		return selectedFileName;
 	}
 }
