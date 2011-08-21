@@ -13,11 +13,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+
+import com.eclipse.web.kit.util.FileUtil;
 
 public class LinkDialog extends Dialog {
 	private boolean result=false;
@@ -167,11 +168,7 @@ public class LinkDialog extends Dialog {
 	}
 	
 	private void doSelectFile() {
-		FileDialog fileDialog=new FileDialog(shell, SWT.OPEN);
-		fileDialog.setFilterExtensions(new String[]{"*.*"});
-		fileDialog.setFilterNames(new String[]{"All files"});
-		
-		String selectedFileName=fileDialog.open();
+		String selectedFileName=FileUtil.selectAnyFile(shell);
 		if (selectedFileName!=null) {
 			textHyperlink.setText(selectedFileName);
 		}
