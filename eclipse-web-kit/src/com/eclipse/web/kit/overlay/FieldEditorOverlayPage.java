@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceNode;
@@ -28,6 +26,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.ui.IWorkbenchPropertyPage;
+
+import com.eclipse.web.kit.Activator;
 
 public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage implements IWorkbenchPropertyPage {
 
@@ -146,11 +146,11 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage i
 			// Cache the page id
 			pageId = getPageId();
 			// Create an overlay preference store and fill it with properties
-			overlayStore =
-					new PropertyStore(
-							(IResource) getElement(),
-							super.getPreferenceStore(),
-							pageId);
+			overlayStore = new ProjectPropertyStore((IProject)getElement(), Activator.getDefault().getPreferenceStore(), pageId);
+//					new PropertyStore(
+//							(IResource) getElement(),
+//							super.getPreferenceStore(),
+//							pageId);
 			// Set overlay store as current preference store
 		}
 		super.createControl(parent);
@@ -201,14 +201,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage i
 			}
 		});
 
-		try {
-			String use =
-					((IResource) getElement()).getPersistentProperty(
-							new QualifiedName(pageId, USEPROJECTSETTINGS));
-			checkboxProjectSpecific.setSelection(TRUE.equals(use));
-		} catch (CoreException e) {
-			checkboxProjectSpecific.setSelection(false);
-		}
+		String use = getPreferenceStore().getString(USEPROJECTSETTINGS);
+		checkboxProjectSpecific.setSelection(TRUE.equals(use));
 	}
 
 	/**
@@ -255,15 +249,8 @@ public abstract class FieldEditorOverlayPage extends FieldEditorPreferencePage i
 	public boolean performOk() {
 		boolean result = super.performOk();
 		if (result && isPropertyPage()) {
-			// Save state of radiobuttons in project properties
-			IResource resource = (IResource) getElement();
-			try {
-				String value = (checkboxProjectSpecific.getSelection()) ? TRUE : FALSE;
-				resource.setPersistentProperty(
-						new QualifiedName(pageId, USEPROJECTSETTINGS),
-						value);
-			} catch (CoreException e) {
-			}
+			String value = (checkboxProjectSpecific.getSelection()) ? TRUE : FALSE;
+			getPreferenceStore().setValue(USEPROJECTSETTINGS, value);
 		}
 		return result;
 	}

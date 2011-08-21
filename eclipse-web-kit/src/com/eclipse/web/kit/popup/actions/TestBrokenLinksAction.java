@@ -112,7 +112,7 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 			}
 			
 			ignoredLinks=new HashSet<String>();
-			String ignoredValue=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_IGNORE);
+			String ignoredValue=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_EXCLUSIONS);
 			
 			if (ignoredValue!=null) {
 				String[] ignoredStrs=ignoredValue.split("\0");			
