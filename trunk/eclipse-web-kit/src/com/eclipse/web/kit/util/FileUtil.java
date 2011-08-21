@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 
-import com.eclipse.web.kit.Activator;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
 
 public class FileUtil {
@@ -192,11 +192,20 @@ public class FileUtil {
 		FileDialog fileDialog=new FileDialog(shell, SWT.OPEN);
 		fileDialog.setFilterExtensions(new String[]{"*.jpg*;.png;*.gif", "*.*"});
 		fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
-		fileDialog.setFilterPath(Activator.getOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_LAST_IMAGE_PATH));
+		try {
+			String lastImagePath=SwtUtil.getActiveProject().getPersistentProperty(PreferenceConstants.Q_LAST_IMAGE_PATH);
+			fileDialog.setFilterPath(lastImagePath);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
 		String selectedImageFileName=fileDialog.open();
 		
 		if (selectedImageFileName!=null) {
-			Activator.setOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_LAST_IMAGE_PATH, getFilePath(selectedImageFileName));
+			try {
+				SwtUtil.getActiveProject().setPersistentProperty(PreferenceConstants.Q_LAST_IMAGE_PATH, getFilePath(selectedImageFileName));
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 		}
 		return selectedImageFileName;
 	}
@@ -205,11 +214,21 @@ public class FileUtil {
 		FileDialog fileDialog=new FileDialog(shell, SWT.OPEN);
 		fileDialog.setFilterExtensions(new String[]{"*.*"});
 		fileDialog.setFilterNames(new String[]{"All files"});
-		fileDialog.setFilterPath(Activator.getOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_LAST_LINK_PATH));
+		try {
+			String lastLinkPath=SwtUtil.getActiveProject().getPersistentProperty(PreferenceConstants.Q_LAST_LINK_PATH);
+			fileDialog.setFilterPath(lastLinkPath);
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		
 		String selectedFileName=fileDialog.open();
 		
 		if (selectedFileName!=null) {
-			Activator.setOverlayedPreferenceValue(SwtUtil.getActiveProject(), PreferenceConstants.Q_LAST_LINK_PATH, getFilePath(selectedFileName));
+			try {
+				SwtUtil.getActiveProject().setPersistentProperty(PreferenceConstants.Q_LAST_LINK_PATH, getFilePath(selectedFileName));
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 		}	
 		return selectedFileName;
 	}

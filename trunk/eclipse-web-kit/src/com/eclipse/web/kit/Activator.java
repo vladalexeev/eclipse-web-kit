@@ -2,13 +2,13 @@ package com.eclipse.web.kit;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.eclipse.web.kit.overlay.FieldEditorOverlayPage;
+import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
 
 /**
@@ -74,31 +74,21 @@ public class Activator extends AbstractUIPlugin {
 			project=resource.getProject();
 		}
 		
-		if (useProjectSettings(project, qname.getQualifier()) || qname.getLocalName().equals(PreferenceConstants.PAGE_ID_INTERNAL)) {
-			return getProperty(resource, qname);
+		ProjectPropertyStore store=new ProjectPropertyStore(project, Activator.getDefault().getPreferenceStore(), qname.getQualifier());
+		
+		if (useProjectSettings(store, qname.getQualifier()) || qname.getLocalName().equals(PreferenceConstants.PAGE_ID_INTERNAL)) {
+			return getProperty(store, qname);
 		} else {
 			return Activator.getDefault().getPreferenceStore().getString(qname.getLocalName());
 		}
 	}
 	
-	private static boolean useProjectSettings(IResource resource, String pageId) {
-		String use = getProperty(resource, new QualifiedName(pageId,FieldEditorOverlayPage.USEPROJECTSETTINGS));
+	private static boolean useProjectSettings(ProjectPropertyStore store, String pageId) {
+		String use = getProperty(store, new QualifiedName(pageId,FieldEditorOverlayPage.USEPROJECTSETTINGS));
 		return "true".equals(use);
 	}
 	
-	private static String getProperty(IResource resource, QualifiedName qname) {
-		try {
-			return resource.getPersistentProperty(qname);
-		} catch (CoreException e) {
-		}
-		return null;
-	}
-	
-	public static void setOverlayedPreferenceValue(IResource resource, QualifiedName qname, String value) {
-		try {
-			resource.setPersistentProperty(qname, value);
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
+	private static String getProperty(ProjectPropertyStore store, QualifiedName qname) {
+		return store.getString(qname.getLocalName());
 	}
 }

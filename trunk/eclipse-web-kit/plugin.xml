@@ -127,9 +127,9 @@
       </page>
       <page
             category="com.eclipse.web.kit.preferences.WebKitPreferences"
-            class="com.eclipse.web.kit.preferences.IgnorePreferences"
+            class="com.eclipse.web.kit.preferences.ExclusionsPreferences"
             id="com.eclipse.web.kit.preferences.IgnorePreferences"
-            name="Ignore lists">
+            name="Exclusions">
          <enabledWhen>
             <instanceof
                   value="org.eclipse.core.resources.IProject">
