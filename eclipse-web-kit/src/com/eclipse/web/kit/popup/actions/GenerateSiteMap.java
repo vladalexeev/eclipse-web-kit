@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 
 import com.eclipse.web.kit.Activator;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
@@ -38,6 +40,7 @@ public class GenerateSiteMap extends ProjectPopupAction {
 		
 		private String projectPath;
 		private PrintWriter writer;
+		private int count=0;
 		
 		private static final int ROOT=1;
 		private static final int ALWAYS=2;
@@ -79,6 +82,7 @@ public class GenerateSiteMap extends ProjectPopupAction {
 						
 						writer.println("<url><loc>"+url+"</loc><lastmod>"+
 								dateFormat.format(new Date(f.getLocalTimeStamp()))+"</lastmod></url>");
+						count++;
 					}
 				}
 			}
@@ -118,6 +122,16 @@ public class GenerateSiteMap extends ProjectPopupAction {
 				
 				writer.println("</urlset>");
 				writer.close();
+				
+				Display.getDefault().asyncExec(new Runnable() {
+					@Override
+					public void run() {
+						MessageDialog.openInformation(
+								new Shell(),
+								"Sitemap generate result",
+								"Sitemap generated with "+count+" URLs");						
+					}
+				});				
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
