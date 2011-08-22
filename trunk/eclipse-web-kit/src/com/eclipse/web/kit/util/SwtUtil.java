@@ -1,6 +1,7 @@
 package com.eclipse.web.kit.util;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
@@ -15,6 +16,10 @@ public class SwtUtil {
 		}
 		
 		return null;
+	}
+	
+	public static Shell getActiveShell() {
+		return getActiveWorkbenchWindow().getShell();
 	}
 	
 	public static IProject getActiveProject() {

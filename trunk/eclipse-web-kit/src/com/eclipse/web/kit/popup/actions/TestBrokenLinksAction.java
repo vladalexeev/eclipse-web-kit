@@ -16,12 +16,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IObjectActionDelegate;
-import org.eclipse.ui.IWorkbenchPart;
 
 import com.eclipse.web.kit.Activator;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
@@ -31,10 +27,8 @@ import com.eclipse.web.kit.util.LinkExtractor;
 import com.eclipse.web.kit.util.LinkInfo;
 import com.eclipse.web.kit.util.LinkPattern;
 
-public class TestBrokenLinksAction implements IObjectActionDelegate {
+public class TestBrokenLinksAction extends ProjectPopupAction {
 
-	private IProject project;
-	
 	private class TestBrokenLinksJob extends Job {
 		private LinkPattern[] linkPatterns;
 		private HashSet<String> ignoredLinks;
@@ -152,30 +146,11 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 	}
 
 	/**
-	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		StructuredSelection sel=(StructuredSelection)targetPart.getSite().getSelectionProvider().getSelection();
-		project=(IProject) sel.getFirstElement();
-	}
-
-	/**
 	 * @see IActionDelegate#run(IAction)
 	 */
 	public void run(IAction action) {
-//		MessageDialog.openInformation(
-//			shell,
-//			"Eclipse-web-kit",
-//			"Test broken links ... was executed.");
-		
 		TestBrokenLinksJob job=new TestBrokenLinksJob("Test broken links");
 		job.schedule();
-	}
-
-	/**
-	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
 	}
 
 }

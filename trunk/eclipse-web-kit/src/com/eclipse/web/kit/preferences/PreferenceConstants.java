@@ -25,7 +25,6 @@ public class PreferenceConstants {
 	public static final String P_SITEMAP_INDEX_FILE = PAGE_ID_SITEMAP+".indexFile";
 	public static final String P_SITEMAP_EXTENSIONS = PAGE_ID_SITEMAP+".extensions";
 	public static final String P_SITEMAP_REPLACE_INDEX_FILE = PAGE_ID_SITEMAP+".replaceIndexFile";
-	public static final String P_SITEMAP_DATE_FORMAT = PAGE_ID_SITEMAP+".dateFormat";
 	public static final String P_SITEMAP_SITEMAP_FILE = PAGE_ID_SITEMAP+".sitemapFile";
 	
 	public static final String V_SITEMAP_REPLACE_INDEX_ROOT_ONLY="rootOnly";
@@ -51,6 +50,9 @@ public class PreferenceConstants {
 	public static final QualifiedName Q_LAST_IMAGE_PATH=new QualifiedName(PAGE_ID_EXCLUSIONS, P_LAST_IMAGE_PATH);
 	public static final QualifiedName Q_LAST_LINK_PATH=new QualifiedName(PAGE_ID_EXCLUSIONS, P_LAST_LINK_PATH);
 	
-	
-	
+	public static final QualifiedName Q_SITEMAP_BASE_URL=new QualifiedName(PAGE_ID_SITEMAP, P_SITEMAP_BASE_URL);
+	public static final QualifiedName Q_SITEMAP_INDEX_FILE=new QualifiedName(PAGE_ID_SITEMAP, P_SITEMAP_INDEX_FILE);
+	public static final QualifiedName Q_SITEMAP_EXTENSIONS=new QualifiedName(PAGE_ID_SITEMAP, P_SITEMAP_EXTENSIONS);
+	public static final QualifiedName Q_SITEMAP_REPLACE_INDEX_FILE=new QualifiedName(PAGE_ID_SITEMAP, P_SITEMAP_REPLACE_INDEX_FILE);
+	public static final QualifiedName Q_SITEMAP_SITEMAP_FILE=new QualifiedName(PAGE_ID_SITEMAP, P_SITEMAP_SITEMAP_FILE);
 }

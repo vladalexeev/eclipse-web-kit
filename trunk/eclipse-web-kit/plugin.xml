@@ -76,8 +76,14 @@
          <action
                class="com.eclipse.web.kit.popup.actions.TestBrokenLinksAction"
                enablesFor="1"
-               id="eclipse-web-kit.newAction"
+               id="com.eclipse.web.kit.popup.actions.TestBrokenLinksAction"
                label="Test broken links ..."
+               menubarPath="eclipse-web-kit.menu.project/group.project">
+         </action>
+         <action
+               class="com.eclipse.web.kit.popup.actions.GenerateSiteMap"
+               id="com.eclipse.web.kit.popup.actions.GenerateSiteMap"
+               label="Generate site map ..."
                menubarPath="eclipse-web-kit.menu.project/group.project">
          </action>
       </objectContribution>
