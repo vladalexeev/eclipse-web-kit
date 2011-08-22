@@ -15,8 +15,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -35,6 +38,7 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 	private class TestBrokenLinksJob extends Job {
 		private LinkPattern[] linkPatterns;
 		private HashSet<String> ignoredLinks;
+		private int count;
 
 		public TestBrokenLinksJob(String name) {
 			super(name);
@@ -73,6 +77,7 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 										marker.setAttribute(IMarker.CHAR_START, link.getBeginIndex());
 										marker.setAttribute(IMarker.CHAR_END, link.getEndIndex());
 										marker.setAttribute(IMarker.LINE_NUMBER, link.getLineNumber());
+										count++;
 									} catch (CoreException e1) {
 										e1.printStackTrace();
 									}									
@@ -124,6 +129,16 @@ public class TestBrokenLinksAction implements IObjectActionDelegate {
 			
 			processSubdirectories(monitor, project, "");
 			
+			Display.getDefault().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					MessageDialog.openInformation(
+							new Shell(),
+							"Search broken links result",
+							count+" broken links found");						
+				}
+			});
+						
 			return Status.OK_STATUS;
 		}
 		
