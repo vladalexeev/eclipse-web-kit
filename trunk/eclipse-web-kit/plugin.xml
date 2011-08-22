@@ -93,11 +93,9 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            category="com.eclipse.web.kit.preferences.WebKitPreferences"
-            class="com.eclipse.web.kit.preferences.HtmlPalettePreferences"
-            id="com.eclipse.web.kit.preferences.HtmlPalettePreferences"
-            name="Html palette properties"
-            nameFilter="*">
+            class="com.eclipse.web.kit.preferences.WebKitPreferences"
+            id="com.eclipse.web.kit.preferences.WebKitPreferences"
+            name="Eclipse Web Kit">
          <enabledWhen>
             <instanceof
                   value="org.eclipse.core.resources.IProject">
@@ -105,9 +103,11 @@
          </enabledWhen>
       </page>
       <page
-            class="com.eclipse.web.kit.preferences.WebKitPreferences"
-            id="com.eclipse.web.kit.preferences.WebKitPreferences"
-            name="Eclipse Web Kit">
+            category="com.eclipse.web.kit.preferences.WebKitPreferences"
+            class="com.eclipse.web.kit.preferences.HtmlPalettePreferences"
+            id="com.eclipse.web.kit.preferences.HtmlPalettePreferences"
+            name="Html palette properties"
+            nameFilter="*">
          <enabledWhen>
             <instanceof
                   value="org.eclipse.core.resources.IProject">
@@ -127,8 +127,19 @@
       </page>
       <page
             category="com.eclipse.web.kit.preferences.WebKitPreferences"
+            class="com.eclipse.web.kit.preferences.SitemapPreferences"
+            id="com.eclipse.web.kit.preferences.SitemapPreferences"
+            name="Site map">
+         <enabledWhen>
+            <instanceof
+                  value="org.eclipse.core.resources.IProject">
+            </instanceof>
+         </enabledWhen>
+      </page>
+      <page
+            category="com.eclipse.web.kit.preferences.WebKitPreferences"
             class="com.eclipse.web.kit.preferences.ExclusionsPreferences"
-            id="com.eclipse.web.kit.preferences.IgnorePreferences"
+            id="com.eclipse.web.kit.preferences.ExclusionsPreferences"
             name="Exclusions">
          <enabledWhen>
             <instanceof

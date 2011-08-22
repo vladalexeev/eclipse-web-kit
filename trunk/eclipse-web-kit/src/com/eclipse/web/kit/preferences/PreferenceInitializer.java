@@ -29,6 +29,13 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.P_BROKEN_LINK_TEMPLATES, 
 				"href=\"*\"\0src=\"*\"\0href=\"javascript:showImage('*'");
 		store.setDefault(PreferenceConstants.P_BROKEN_LINK_EXCLUSIONS, "");
+		
+		store.setDefault(PreferenceConstants.P_SITEMAP_BASE_URL, "");
+		store.setDefault(PreferenceConstants.P_SITEMAP_EXTENSIONS, "htm, html");
+		store.setDefault(PreferenceConstants.P_SITEMAP_INDEX_FILE, "index.html");
+		store.setDefault(PreferenceConstants.P_SITEMAP_SITEMAP_FILE, "sitemap.xml");
+		store.setDefault(PreferenceConstants.P_SITEMAP_DATE_FORMAT, PreferenceConstants.V_SITEMAP_DATE_FORMAT_DATE);
+		store.setDefault(PreferenceConstants.P_SITEMAP_REPLACE_INDEX_FILE, PreferenceConstants.V_SITEMAP_REPLACE_INDEX_ROOT_ONLY);
 	}
 
 }
