@@ -26,12 +26,14 @@ import com.eclipse.web.kit.util.FileUtil;
 import com.eclipse.web.kit.util.LinkExtractor;
 import com.eclipse.web.kit.util.LinkInfo;
 import com.eclipse.web.kit.util.LinkPattern;
+import com.eclipse.web.kit.util.StringUtil;
 
 public class TestBrokenLinksAction extends ProjectPopupAction {
 
 	private class TestBrokenLinksJob extends Job {
 		private LinkPattern[] linkPatterns;
 		private HashSet<String> ignoredLinks;
+		private HashSet<String> fileExtensions;
 		private int count;
 
 		public TestBrokenLinksJob(String name) {
@@ -51,13 +53,20 @@ public class TestBrokenLinksAction extends ProjectPopupAction {
 					monitor.setTaskName(relativeTargetFile.toString());
 					processSubdirectories(monitor, project, relativeTargetFile.toString());
 				} else {
-					if (childFileName.endsWith(".htm") || childFileName.endsWith(".html")) {
+					String ext="";
+					int index=childFileName.indexOf('.');
+					if (index>=0) {
+						ext=childFileName.substring(index+1);
+					}
+					
+					if (fileExtensions.contains(ext)) {
 						try {
 							String fileContent=FileLoader.loadFile(targetFile.toString());
 							List<LinkInfo> fileLinks=LinkExtractor.extractLinks(fileContent, linkPatterns);
 							for (LinkInfo link:fileLinks) {
 								if (link.getLinkFile()==null || link.getLinkFile().startsWith("http://") ||
-									link.getLinkFile().startsWith("https://") || link.getLinkFile().startsWith("mailto:")) {
+									link.getLinkFile().startsWith("https://") || link.getLinkFile().startsWith("mailto:") ||
+									link.getLinkFile().startsWith("javascript:")) {
 									continue;
 								}
 								
@@ -112,6 +121,12 @@ public class TestBrokenLinksAction extends ProjectPopupAction {
 			
 			ignoredLinks=new HashSet<String>();
 			String ignoredValue=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_EXCLUSIONS);
+			
+			fileExtensions=new HashSet<String>();
+			String[] arrExtensions=StringUtil.splitStringByCommas(Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_BROKEN_LINK_FILE_EXTENSIONS));
+			for (String e:arrExtensions) {
+				fileExtensions.add(e);
+			}
 			
 			if (ignoredValue!=null) {
 				String[] ignoredStrs=ignoredValue.split("\0");			

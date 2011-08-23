@@ -1,6 +1,7 @@
 package com.eclipse.web.kit.preferences;
 
 import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -43,6 +44,8 @@ public class BrokenLinksPreferences extends FieldEditorOverlayPage implements
 
 	@Override
 	protected void createFieldEditors() {
+		addField(new StringFieldEditor(PreferenceConstants.P_BROKEN_LINK_FILE_EXTENSIONS, "File extensions", getFieldEditorParent()));
+		
 		StringListFieldEditor templatesEditor=new StringListFieldEditor(PreferenceConstants.P_BROKEN_LINK_TEMPLATES, "Templates for searching broken links", getFieldEditorParent());
 		templatesEditor.setValidator(templateValidator);
 		addField(templatesEditor);
