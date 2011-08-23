@@ -19,6 +19,7 @@ public class PreferenceConstants {
 	public static final String P_TEMPLATE_ZOOM_IMAGE = PAGE_ID_HTML_PALETTE+".templateZoomImage";
 	
 	public static final String P_BROKEN_LINK_TEMPLATES = PAGE_ID_BROKEN_LINKS+".brokenLinkTemplates";
+	public static final String P_BROKEN_LINK_FILE_EXTENSIONS = PAGE_ID_BROKEN_LINKS+".brokenLinkFileExtensions";
 	public static final String P_BROKEN_LINK_EXCLUSIONS = PAGE_ID_EXCLUSIONS+".brokenLinkExclusions";
 	
 	public static final String P_SITEMAP_BASE_URL = PAGE_ID_SITEMAP+".baseUrl";
@@ -47,6 +48,7 @@ public class PreferenceConstants {
 	public static final QualifiedName Q_TEMPLATE_ZOOM_IMAGE=new QualifiedName(PAGE_ID_HTML_PALETTE, P_TEMPLATE_ZOOM_IMAGE);
 	
 	public static final QualifiedName Q_BROKEN_LINK_TEMPLATES=new QualifiedName(PAGE_ID_BROKEN_LINKS, P_BROKEN_LINK_TEMPLATES);
+	public static final QualifiedName Q_BROKEN_LINK_FILE_EXTENSIONS=new QualifiedName(PAGE_ID_BROKEN_LINKS, P_BROKEN_LINK_FILE_EXTENSIONS);
 	
 	public static final QualifiedName Q_LAST_IMAGE_PATH=new QualifiedName(PAGE_ID_INTERNAL, P_LAST_IMAGE_PATH);
 	public static final QualifiedName Q_LAST_LINK_PATH=new QualifiedName(PAGE_ID_INTERNAL, P_LAST_LINK_PATH);

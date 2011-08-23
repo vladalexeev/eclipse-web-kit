@@ -27,7 +27,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 				"<img src=\"{smallImageFile}\" width=\"{smallImageWidth}\" height=\"{smallImageHeight}\" border=\"0\" alt=\"{name}\" title=\"{name}\" /></a>");
 		
 		store.setDefault(PreferenceConstants.P_BROKEN_LINK_TEMPLATES, 
-				"href=\"*\"\0src=\"*\"\0href=\"javascript:showImage('*'");
+				" href=\"*\"\0 src=\"*\"\0 href=\"javascript:showImage('*'");
+		store.setDefault(PreferenceConstants.P_BROKEN_LINK_FILE_EXTENSIONS, "htm, html");
 		store.setDefault(PreferenceConstants.P_BROKEN_LINK_EXCLUSIONS, "");
 		
 		store.setDefault(PreferenceConstants.P_SITEMAP_BASE_URL, "");
