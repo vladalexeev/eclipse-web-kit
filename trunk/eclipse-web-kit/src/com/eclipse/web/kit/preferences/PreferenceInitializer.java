@@ -35,6 +35,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		store.setDefault(PreferenceConstants.P_SITEMAP_INDEX_FILE, "index.html");
 		store.setDefault(PreferenceConstants.P_SITEMAP_SITEMAP_FILE, "sitemap.xml");
 		store.setDefault(PreferenceConstants.P_SITEMAP_REPLACE_INDEX_FILE, PreferenceConstants.V_SITEMAP_REPLACE_INDEX_ROOT_ONLY);
+		store.setDefault(PreferenceConstants.P_SITEMAP_EXCLUSIONS, "");
 	}
 
 }

@@ -18,8 +18,8 @@ public class ExclusionsPreferences extends FieldEditorPropertyPage {
 
 	@Override
 	protected void createFieldEditors() {
-		StringListFieldEditor ignoreEditor=new StringListFieldEditor(PreferenceConstants.P_BROKEN_LINK_EXCLUSIONS, "Broken links exclusions", getFieldEditorParent());
-		addField(ignoreEditor);
+		addField(new StringListFieldEditor(PreferenceConstants.P_BROKEN_LINK_EXCLUSIONS, "Broken links exclusions", getFieldEditorParent()));
+		addField(new StringListFieldEditor(PreferenceConstants.P_SITEMAP_EXCLUSIONS, "Sitemap exclusions", getFieldEditorParent()));
 	}
 
 }
