@@ -37,6 +37,7 @@ public class GenerateSiteMap extends ProjectPopupAction {
 		private HashSet<String> fileExtensions;
 		private String sitemapFileName;
 		private SimpleDateFormat dateFormat;
+		private HashSet<String> sitemapExlusions;
 		
 		private String projectPath;
 		private PrintWriter writer;
@@ -71,6 +72,10 @@ public class GenerateSiteMap extends ProjectPopupAction {
 					IFile f=(IFile)m;
 					if (fileExtensions.contains(f.getFileExtension())) {
 						String relativePath=FileUtil.createRelativePath2(projectPath, f.getLocation().toString());
+						if (sitemapExlusions.contains(relativePath)) {
+							continue;
+						}
+						
 						URL url=new URL(siteUrl,relativePath);
 						if (f.getName().equals(indexFileName)) {
 							if (resource==project && (replaceIndexRule==ROOT || replaceIndexRule==ALWAYS)) {
@@ -111,6 +116,15 @@ public class GenerateSiteMap extends ProjectPopupAction {
 				for (String e:arrExtensions) {
 					fileExtensions.add(e);
 				}
+				
+				String strExclusions=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_SITEMAP_EXCLUSIONS);
+				sitemapExlusions=new HashSet<String>(); {
+					String[] arr=strExclusions.split("\0");
+					for (String e:arr) {
+						sitemapExlusions.add(e);
+					}
+				}
+				if (strExclusions!=null && strExclusions.length()>0)
 				
 				projectPath=project.getLocation().toString();
 
