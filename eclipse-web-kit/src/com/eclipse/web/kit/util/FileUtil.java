@@ -190,7 +190,7 @@ public class FileUtil {
 	
 	public static String selectImageFile(Shell shell) {
 		FileDialog fileDialog=new FileDialog(shell, SWT.OPEN);
-		fileDialog.setFilterExtensions(new String[]{"*.jpg*;.png;*.gif", "*.*"});
+		fileDialog.setFilterExtensions(new String[]{"*.jpg*;*.png;*.gif", "*.*"});
 		fileDialog.setFilterNames(new String[]{"Images (jpg, png, gif)","All files"});
 		try {
 			String lastImagePath=SwtUtil.getActiveProject().getPersistentProperty(PreferenceConstants.Q_LAST_IMAGE_PATH);
