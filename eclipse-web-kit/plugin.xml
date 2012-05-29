@@ -87,6 +87,25 @@
                menubarPath="eclipse-web-kit.menu.project/group.project">
          </action>
       </objectContribution>
+      <objectContribution
+            id="eclipse-web-kit.contribution.folder"
+            objectClass="org.eclipse.core.resources.IFolder">
+         <menu
+               id="eclipse-web-kit.menu.folder"
+               label="Eclipse Web Kit"
+               path="additions">
+            <separator
+                  name="group.folder">
+            </separator>
+         </menu>
+         <action
+               class="com.eclipse.web.kit.popup.actions.BatchReplaceAction"
+               enablesFor="1"
+               id="com.eclipse.web.kit.popup.actions.BatchReplaceAction"
+               label="Batch replace..."
+               menubarPath="eclipse-web-kit.menu.folder/group.folder">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          id="brokenlink"
