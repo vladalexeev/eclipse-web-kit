@@ -12,6 +12,7 @@ public class PreferenceConstants {
 	public static final String PAGE_ID_EXCLUSIONS="com.eclipse.web.kit.preferences.exclusions";
 	public static final String PAGE_ID_INTERNAL="com.eclipse.web.kit.preferences.internal";
 	public static final String PAGE_ID_SITEMAP="com.eclipse.web.kit.preferences.sitemap";
+	public static final String PAGE_ID_BATCH_REPLACE="com.eclipse.web.kit.preferences.batchreplace";
 	
 	
 	public static final String P_TEMPLATE_LINK = PAGE_ID_HTML_PALETTE+".templateLink";
@@ -40,6 +41,11 @@ public class PreferenceConstants {
 	
 	public static final String P_LAST_IMAGE_PATH=PAGE_ID_INTERNAL+".lastImagePath";
 	public static final String P_LAST_LINK_PATH=PAGE_ID_INTERNAL+".lastLinkPath";
+	
+	public static final String P_BATCH_REPLACE_IGNORE_WHITESPACES=PAGE_ID_BATCH_REPLACE+".ignoreWhitespaces";
+	public static final String P_BATCH_REPLACE_RECURSIVE_SEARCH=PAGE_ID_BATCH_REPLACE+".recursiveSearch";
+	public static final String P_BATCH_REPLACE_FIND_TEXT=PAGE_ID_BATCH_REPLACE+".findText";
+	public static final String P_BATCH_REPLACE_REPLACE_TEXT=PAGE_ID_BATCH_REPLACE+".replaceText";
 	
 	
 	

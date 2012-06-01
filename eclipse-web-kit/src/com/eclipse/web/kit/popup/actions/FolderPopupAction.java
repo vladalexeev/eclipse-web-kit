@@ -1,15 +1,15 @@
 package com.eclipse.web.kit.popup.actions;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-public class FolderPopupAction implements IObjectActionDelegate {
+public abstract class FolderPopupAction implements IObjectActionDelegate {
 
-	private Shell shell;
+	protected IFolder folder;
 	
 	/**
 	 * Constructor for Action1.
@@ -22,17 +22,8 @@ public class FolderPopupAction implements IObjectActionDelegate {
 	 * @see IObjectActionDelegate#setActivePart(IAction, IWorkbenchPart)
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		shell = targetPart.getSite().getShell();
-	}
-
-	/**
-	 * @see IActionDelegate#run(IAction)
-	 */
-	public void run(IAction action) {
-		MessageDialog.openInformation(
-			shell,
-			"Eclipse-web-kit",
-			"Batch replace... was executed.");
+		StructuredSelection sel=(StructuredSelection)targetPart.getSite().getSelectionProvider().getSelection();
+		folder=(IFolder) sel.getFirstElement();	
 	}
 
 	/**
