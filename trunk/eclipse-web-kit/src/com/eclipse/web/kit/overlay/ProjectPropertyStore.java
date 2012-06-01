@@ -19,7 +19,10 @@ public class ProjectPropertyStore extends PreferenceStore {
 		this.fileName=makeFileName(project, pageId);
 		
 		try {
-			load();
+			File file=new File(fileName);
+			if (file.exists()) {
+				load();
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

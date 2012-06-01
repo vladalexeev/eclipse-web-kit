@@ -16,6 +16,9 @@ import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.eclipse.web.kit.overlay.ProjectPropertyStore;
+import com.eclipse.web.kit.preferences.PreferenceConstants;
+
 public class BatchReplaceDialog extends Dialog {
 
 	private Shell shell;
@@ -27,6 +30,7 @@ public class BatchReplaceDialog extends Dialog {
 	private Text textReplace;
 	
 	private Button checkboxIgnoreWhitespaces;
+	private Button checkboxRecursiveSearch;
 	
 	private Composite bottomPanel;
 	private Button buttonJustFind;
@@ -34,14 +38,22 @@ public class BatchReplaceDialog extends Dialog {
 	private Button buttonCancel;	
 	
 	private boolean result=false;
+	private boolean resultIgnoreWhitespaces;
+	private boolean resultRecursiveSearch;
+	private String resultFindText;
+	private String resultReplaceText;
 	
-	public BatchReplaceDialog(Shell parent, int style) {
+	private ProjectPropertyStore store;
+	
+	public BatchReplaceDialog(Shell parent, int style, ProjectPropertyStore store) {
 		super(parent, style);
+		this.store=store;
 		createControls();
 	}
 
-	public BatchReplaceDialog(Shell parent) {
+	public BatchReplaceDialog(Shell parent, ProjectPropertyStore store) {
 		super(parent);
+		this.store=store;
 		createControls();
 	}
 	
@@ -67,6 +79,7 @@ public class BatchReplaceDialog extends Dialog {
 		textFindGridData.widthHint=400;
 		textFindGridData.heightHint=100;
 		textFind=new Text(shell, SWT.MULTI| SWT.BORDER);
+		textFind.setText(store.getString(PreferenceConstants.P_BATCH_REPLACE_FIND_TEXT));
 		textFind.setLayoutData(textFindGridData);
 
 		labelReplaceText=new Label(shell, SWT.NONE);
@@ -77,10 +90,16 @@ public class BatchReplaceDialog extends Dialog {
 		textReplaceGridData.widthHint=400;
 		textReplaceGridData.heightHint=100;
 		textReplace=new Text(shell, SWT.MULTI| SWT.BORDER);
+		textReplace.setText(store.getString(PreferenceConstants.P_BATCH_REPLACE_REPLACE_TEXT));
 		textReplace.setLayoutData(textReplaceGridData);
 		
 		checkboxIgnoreWhitespaces=new Button(shell, SWT.CHECK);
 		checkboxIgnoreWhitespaces.setText("Ignore leading and trailing whitespaces");
+		checkboxIgnoreWhitespaces.setSelection(store.getBoolean(PreferenceConstants.P_BATCH_REPLACE_IGNORE_WHITESPACES));
+		
+		checkboxRecursiveSearch=new Button(shell, SWT.CHECK);
+		checkboxRecursiveSearch.setText("Recursive search");
+		checkboxRecursiveSearch.setSelection(store.getBoolean(PreferenceConstants.P_BATCH_REPLACE_RECURSIVE_SEARCH));
 		
 		
 		GridData bottomGridData=new GridData(SWT.FILL, SWT.FILL, true, false);
@@ -102,6 +121,7 @@ public class BatchReplaceDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				result=true;
+				fillResultValues();
 				shell.close();
 			}
 			
@@ -114,6 +134,7 @@ public class BatchReplaceDialog extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				result=true;
+				fillResultValues();
 				shell.close();
 			}
 			
@@ -149,5 +170,28 @@ public class BatchReplaceDialog extends Dialog {
 		}
 		
 		return result;
-	}	
+	}
+	
+	private void fillResultValues() {
+		resultIgnoreWhitespaces=checkboxIgnoreWhitespaces.getSelection();
+		resultRecursiveSearch=checkboxRecursiveSearch.getSelection();
+		resultFindText=textFind.getText();
+		resultReplaceText=textReplace.getText();
+	}
+
+	public boolean isResultIgnoreWhitespaces() {
+		return resultIgnoreWhitespaces;
+	}
+
+	public boolean isResultRecursiveSearch() {
+		return resultRecursiveSearch;
+	}
+
+	public String getResultFindText() {
+		return resultFindText;
+	}
+
+	public String getResultReplaceText() {
+		return resultReplaceText;
+	}
 }
