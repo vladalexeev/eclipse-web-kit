@@ -43,6 +43,7 @@ public class PreferenceConstants {
 	public static final String P_LAST_LINK_PATH=PAGE_ID_INTERNAL+".lastLinkPath";
 	
 	public static final String P_BATCH_REPLACE_IGNORE_WHITESPACES=PAGE_ID_BATCH_REPLACE+".ignoreWhitespaces";
+	public static final String P_BATCH_REPLACE_IGNORE_LINEBREAKS=PAGE_ID_BATCH_REPLACE+".ignoreLinebreaks";
 	public static final String P_BATCH_REPLACE_RECURSIVE_SEARCH=PAGE_ID_BATCH_REPLACE+".recursiveSearch";
 	public static final String P_BATCH_REPLACE_FIND_TEXT=PAGE_ID_BATCH_REPLACE+".findText";
 	public static final String P_BATCH_REPLACE_REPLACE_TEXT=PAGE_ID_BATCH_REPLACE+".replaceText";

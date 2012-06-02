@@ -23,6 +23,7 @@ public class BatchReplaceAction extends FolderPopupAction {
 			System.out.println("Execute batch replace");
 						
 			store.setValue(PreferenceConstants.P_BATCH_REPLACE_IGNORE_WHITESPACES, dialog.isResultIgnoreWhitespaces());
+			store.setValue(PreferenceConstants.P_BATCH_REPLACE_IGNORE_LINEBREAKS, dialog.isResultIgnoreLinebreaks());
 			store.setValue(PreferenceConstants.P_BATCH_REPLACE_RECURSIVE_SEARCH, dialog.isResultRecursiveSearch());
 			store.setValue(PreferenceConstants.P_BATCH_REPLACE_FIND_TEXT, dialog.getResultFindText());
 			store.setValue(PreferenceConstants.P_BATCH_REPLACE_REPLACE_TEXT, dialog.getResultReplaceText());
