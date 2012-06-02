@@ -31,15 +31,17 @@ public class BatchReplaceDialog extends Dialog {
 	
 	private Button checkboxIgnoreWhitespaces;
 	private Button checkboxRecursiveSearch;
+	private Button checkboxIgnoreLinebreaks;
 	
 	private Composite bottomPanel;
 	private Button buttonJustFind;
 	private Button buttonReplace;
-	private Button buttonCancel;	
+	private Button buttonCancel;
 	
 	private boolean result=false;
 	private boolean resultIgnoreWhitespaces;
 	private boolean resultRecursiveSearch;
+	private boolean resultIgnoreLinebreaks;
 	private String resultFindText;
 	private String resultReplaceText;
 	
@@ -94,13 +96,16 @@ public class BatchReplaceDialog extends Dialog {
 		textReplace.setLayoutData(textReplaceGridData);
 		
 		checkboxIgnoreWhitespaces=new Button(shell, SWT.CHECK);
-		checkboxIgnoreWhitespaces.setText("Ignore leading and trailing whitespaces");
+		checkboxIgnoreWhitespaces.setText("Ignore leading and trailing whitespaces while searching");
 		checkboxIgnoreWhitespaces.setSelection(store.getBoolean(PreferenceConstants.P_BATCH_REPLACE_IGNORE_WHITESPACES));
+		
+		checkboxIgnoreLinebreaks=new Button(shell, SWT.CHECK);
+		checkboxIgnoreLinebreaks.setText("Ignore line breaks while searching");
+		checkboxIgnoreLinebreaks.setSelection(store.getBoolean(PreferenceConstants.P_BATCH_REPLACE_IGNORE_LINEBREAKS));
 		
 		checkboxRecursiveSearch=new Button(shell, SWT.CHECK);
 		checkboxRecursiveSearch.setText("Recursive search");
-		checkboxRecursiveSearch.setSelection(store.getBoolean(PreferenceConstants.P_BATCH_REPLACE_RECURSIVE_SEARCH));
-		
+		checkboxRecursiveSearch.setSelection(store.getBoolean(PreferenceConstants.P_BATCH_REPLACE_RECURSIVE_SEARCH));		
 		
 		GridData bottomGridData=new GridData(SWT.FILL, SWT.FILL, true, false);
 		bottomGridData.horizontalSpan=3;
@@ -175,6 +180,7 @@ public class BatchReplaceDialog extends Dialog {
 	private void fillResultValues() {
 		resultIgnoreWhitespaces=checkboxIgnoreWhitespaces.getSelection();
 		resultRecursiveSearch=checkboxRecursiveSearch.getSelection();
+		resultIgnoreLinebreaks=checkboxIgnoreLinebreaks.getSelection();
 		resultFindText=textFind.getText();
 		resultReplaceText=textReplace.getText();
 	}
@@ -183,6 +189,10 @@ public class BatchReplaceDialog extends Dialog {
 		return resultIgnoreWhitespaces;
 	}
 
+	public boolean isResultIgnoreLinebreaks() {
+		return resultIgnoreLinebreaks;
+	}
+	
 	public boolean isResultRecursiveSearch() {
 		return resultRecursiveSearch;
 	}
