@@ -9,6 +9,7 @@ import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
 import com.eclipse.web.kit.util.SwtUtil;
 import com.eclipse.web.kit.views.BatchReplaceDialog;
+import com.eclipse.web.kit.views.BatchReplaceResultDialog;
 
 public class BatchReplaceAction extends FolderPopupAction {
 
@@ -33,6 +34,14 @@ public class BatchReplaceAction extends FolderPopupAction {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			BatchReplaceResultDialog resultDialog=new BatchReplaceResultDialog(SwtUtil.getActiveWorkbenchWindow().getShell());
+			resultDialog.setFilesProcessed(10);
+			resultDialog.setFilesFound(5);
+			resultDialog.setOccurencesFound(15);
+			resultDialog.setFilesChanged(4);
+			resultDialog.setErrorsCount(1);
+			resultDialog.open();
 			
 		} else {
 			System.out.println("Canceled");
