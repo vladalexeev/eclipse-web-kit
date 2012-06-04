@@ -47,6 +47,7 @@ public class PreferenceConstants {
 	public static final String P_BATCH_REPLACE_RECURSIVE_SEARCH=PAGE_ID_BATCH_REPLACE+".recursiveSearch";
 	public static final String P_BATCH_REPLACE_FIND_TEXT=PAGE_ID_BATCH_REPLACE+".findText";
 	public static final String P_BATCH_REPLACE_REPLACE_TEXT=PAGE_ID_BATCH_REPLACE+".replaceText";
+	public static final String P_BATCH_REPLACE_EXTENSIONS=PAGE_ID_BATCH_REPLACE+".extensions";
 	
 	
 	
