@@ -20,14 +20,22 @@ import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
 
 public class BatchReplaceDialog extends Dialog {
+	
+	public enum RESULT {
+		NO_RESULT,
+		JUST_FIND,
+		REPLACE
+	}
 
 	private Shell shell;
 	
 	private Label labelFindText;
 	private Label labelReplaceText;
+	private Label labelExtensions;
 	
 	private Text textFind;
 	private Text textReplace;
+	private Text textExtensions;
 	
 	private Button checkboxIgnoreWhitespaces;
 	private Button checkboxRecursiveSearch;
@@ -38,12 +46,13 @@ public class BatchReplaceDialog extends Dialog {
 	private Button buttonReplace;
 	private Button buttonCancel;
 	
-	private boolean result=false;
+	private RESULT result=RESULT.NO_RESULT;
 	private boolean resultIgnoreWhitespaces;
 	private boolean resultRecursiveSearch;
 	private boolean resultIgnoreLinebreaks;
 	private String resultFindText;
 	private String resultReplaceText;
+	private String resultExtensions;
 	
 	private ProjectPropertyStore store;
 	
@@ -95,6 +104,15 @@ public class BatchReplaceDialog extends Dialog {
 		textReplace.setText(store.getString(PreferenceConstants.P_BATCH_REPLACE_REPLACE_TEXT));
 		textReplace.setLayoutData(textReplaceGridData);
 		
+		labelExtensions=new Label(shell, SWT.NONE);
+		labelExtensions.setText("Extensions");
+
+		GridData textExtensionsGridData=new GridData(SWT.FILL, SWT.FILL, true, false);
+		textExtensionsGridData.widthHint=400;
+		textExtensions=new Text(shell, SWT.SINGLE| SWT.BORDER);
+		textExtensions.setText(store.getString(PreferenceConstants.P_BATCH_REPLACE_EXTENSIONS));
+		textExtensions.setLayoutData(textExtensionsGridData);
+		
 		checkboxIgnoreWhitespaces=new Button(shell, SWT.CHECK);
 		checkboxIgnoreWhitespaces.setText("Ignore leading and trailing whitespaces while searching");
 		checkboxIgnoreWhitespaces.setSelection(store.getBoolean(PreferenceConstants.P_BATCH_REPLACE_IGNORE_WHITESPACES));
@@ -125,7 +143,7 @@ public class BatchReplaceDialog extends Dialog {
 		buttonJustFind.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				result=true;
+				result=RESULT.JUST_FIND;
 				fillResultValues();
 				shell.close();
 			}
@@ -138,7 +156,7 @@ public class BatchReplaceDialog extends Dialog {
 		buttonReplace.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				result=true;
+				result=RESULT.REPLACE;
 				fillResultValues();
 				shell.close();
 			}
@@ -167,7 +185,7 @@ public class BatchReplaceDialog extends Dialog {
 		shell.setLocation (x, y);
 	}
 	
-	public boolean open () {
+	public RESULT open () {
 		shell.open();
 		Display display = getParent().getDisplay();
 		while (!shell.isDisposed()) {
@@ -183,6 +201,7 @@ public class BatchReplaceDialog extends Dialog {
 		resultIgnoreLinebreaks=checkboxIgnoreLinebreaks.getSelection();
 		resultFindText=textFind.getText();
 		resultReplaceText=textReplace.getText();
+		resultExtensions=textExtensions.getText();
 	}
 
 	public boolean isResultIgnoreWhitespaces() {
@@ -203,5 +222,9 @@ public class BatchReplaceDialog extends Dialog {
 
 	public String getResultReplaceText() {
 		return resultReplaceText;
+	}
+	
+	public String getResultExtensions() {
+		return resultExtensions;
 	}
 }
