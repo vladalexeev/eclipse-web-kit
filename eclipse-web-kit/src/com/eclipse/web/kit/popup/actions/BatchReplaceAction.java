@@ -2,8 +2,10 @@ package com.eclipse.web.kit.popup.actions;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.util.HashSet;
 import java.util.StringTokenizer;
@@ -37,7 +39,7 @@ public class BatchReplaceAction extends FolderPopupAction {
 		private HashSet<String> fileExtensions;
 		protected StringTransformerOptions options;
 		private String textToFind;
-		private String textForReplace;
+		protected String textForReplace;
 		
 		protected String transformedTextToFind;
 		
@@ -104,7 +106,20 @@ public class BatchReplaceAction extends FolderPopupAction {
 				}
 			} while (count>=0);
 			
+			reader.close();
+			
 			return result.toString();
+		}
+		
+		protected void saveFile(IFile ifile, String content) throws IOException, CoreException {
+			String charset=ifile.getCharset();
+			File file=ifile.getLocation().makeAbsolute().toFile();
+			FileOutputStream fos=new FileOutputStream(file);
+			OutputStreamWriter writer=new OutputStreamWriter(fos, charset);
+
+			writer.write(content);
+			
+			writer.close();
 		}
 
 
@@ -115,6 +130,10 @@ public class BatchReplaceAction extends FolderPopupAction {
 			tr.setText(textToFind);
 			tr.transformText();
 			transformedTextToFind=tr.getTransformedText();
+			
+			if (options.isIgnoreNewLines()) {
+				textForReplace='\n'+textForReplace+'\n';
+			}
 			
 			try {
 				walkFolders(folder);
@@ -133,7 +152,13 @@ public class BatchReplaceAction extends FolderPopupAction {
 					resultDialog.setErrorsCount(countErrors);
 					resultDialog.open();
 				}
-			});		
+			});
+			
+			try {
+				folder.refreshLocal(IResource.DEPTH_INFINITE, null);
+			} catch (CoreException e) {
+				e.printStackTrace();
+			}
 						
 			return Status.OK_STATUS;
 		}
@@ -172,6 +197,55 @@ public class BatchReplaceAction extends FolderPopupAction {
 				countFilesFound++;
 			}
 		}
+	}
+	
+	private class JobBatchReplace extends JobBatchCommand {
+
+		public JobBatchReplace(String name) {
+			super(name);
+		}
+
+		@Override
+		protected void processFile(IFile ifile) throws CoreException, IOException {
+			String fileContent=loadFile(ifile);
+			
+			StringTransformer tr=new StringTransformer();
+			tr.setOptions(options);
+			tr.setText(fileContent);
+			tr.transformText();
+			String transformedContent=tr.getTransformedText();
+			int[] originalCharIndexes=tr.getOriginalCharIndexes();
+			
+			int prevIndex=0;
+			int index=0;
+			String resultText="";
+			boolean occurFound=false;
+			
+			while (index>=0) {
+				prevIndex=index;
+				index=transformedContent.indexOf(transformedTextToFind, index);
+				if (index>=0) {
+					int beginIndex=originalCharIndexes[prevIndex];
+					int endIndex= (index>0 ? originalCharIndexes[index-1]+1: 0);
+					resultText+=fileContent.substring(beginIndex, endIndex)+textForReplace;
+					
+					index+=transformedTextToFind.length();
+					occurFound=true;
+					countOccurences++;
+				}
+			}
+			
+			int beginIndex=originalCharIndexes[prevIndex];
+			resultText+=fileContent.substring(beginIndex);
+			
+			if (occurFound) {
+				countFilesFound++;
+			}
+			
+			saveFile(ifile, resultText);
+			countFilesChanges++;
+		}
+		
 	}
 	
 	@Override
@@ -219,6 +293,8 @@ public class BatchReplaceAction extends FolderPopupAction {
 			
 			if (result==RESULT.JUST_FIND) {
 				job=new JobJustFind("Just find");
+			} else if (result==RESULT.REPLACE){
+				job=new JobBatchReplace("Batch replace");
 			} else {
 				return;
 			}
