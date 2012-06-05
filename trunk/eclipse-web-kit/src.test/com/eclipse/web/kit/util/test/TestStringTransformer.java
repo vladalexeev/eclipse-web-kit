@@ -78,6 +78,23 @@ public class TestStringTransformer {
 	}	
 	
 	@Test
+	public void testIgnoreLeadingTrailingWhitespaces2() {
+		StringTransformerOptions options=new StringTransformerOptions();
+		options.setIgnoreLeadingWhitespaces(true);
+		options.setIgnoreTrailingwhitespaces(true);
+		
+		StringTransformer tr=new StringTransformer();
+		tr.setOptions(options);
+		tr.setText("test\r\n  abc  \r\n 123 ");
+		
+		tr.transformText();
+		
+		assertEquals("test\r\nabc\r\n123", tr.getTransformedText());
+		assertTrue(Arrays.equals(tr.getOriginalCharIndexes(), 
+				new int[]{0,1,2,3,4,5,8,9,10,13,14,16,17,18}));
+	}	
+	
+	@Test
 	public void testIgnoreLeadingTrailingWhitespacesAndNewLines() {
 		StringTransformerOptions options=new StringTransformerOptions();
 		options.setIgnoreLeadingWhitespaces(true);
