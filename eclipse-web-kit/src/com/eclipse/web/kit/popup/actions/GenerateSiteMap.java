@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 
@@ -27,6 +28,7 @@ import com.eclipse.web.kit.preferences.PreferenceConstants;
 import com.eclipse.web.kit.util.FileUtil;
 import com.eclipse.web.kit.util.StringUtil;
 import com.eclipse.web.kit.util.SwtUtil;
+import com.eclipse.web.kit.util.WildcardFilter;
 
 public class GenerateSiteMap extends ProjectPopupAction {
 	
@@ -37,7 +39,9 @@ public class GenerateSiteMap extends ProjectPopupAction {
 		private HashSet<String> fileExtensions;
 		private String sitemapFileName;
 		private SimpleDateFormat dateFormat;
+		
 		private HashSet<String> sitemapExlusions;
+		private ArrayList<WildcardFilter> sitemapExclusionPatters=new ArrayList<WildcardFilter>();
 		
 		private String projectPath;
 		private PrintWriter writer;
@@ -49,6 +53,21 @@ public class GenerateSiteMap extends ProjectPopupAction {
 
 		public JobGenerateSiteMap(String name) {
 			super(name);
+		}
+		
+		private boolean isExcludedPath(String relativePath) {
+			relativePath.replace('\\', '/');
+			if (sitemapExlusions.contains(relativePath)) {
+				return true;
+			}
+			
+			for (WildcardFilter f:sitemapExclusionPatters) {
+				if (f.accept(relativePath)) {
+					return true;
+				}
+			}
+			
+			return false;
 		}
 		
 		private void walkFolders(IResource resource) throws CoreException, MalformedURLException {
@@ -72,7 +91,7 @@ public class GenerateSiteMap extends ProjectPopupAction {
 					IFile f=(IFile)m;
 					if (fileExtensions.contains(f.getFileExtension())) {
 						String relativePath=FileUtil.createRelativePath2(projectPath, f.getLocation().toString());
-						if (sitemapExlusions.contains(relativePath)) {
+						if (isExcludedPath(relativePath)) {
 							continue;
 						}
 						
@@ -118,13 +137,21 @@ public class GenerateSiteMap extends ProjectPopupAction {
 				}
 				
 				String strExclusions=Activator.getOverlayedPreferenceValue(project, PreferenceConstants.Q_SITEMAP_EXCLUSIONS);
-				sitemapExlusions=new HashSet<String>(); {
+				sitemapExlusions=new HashSet<String>(); 
+				sitemapExclusionPatters=new ArrayList<WildcardFilter>();
+				if (strExclusions!=null && strExclusions.length()>0) {
 					String[] arr=strExclusions.split("\0");
 					for (String e:arr) {
-						sitemapExlusions.add(e);
+						e=e.replace('\\', '/');
+						if (e.indexOf('*')>=0 || e.indexOf('?')>=0) {
+							sitemapExclusionPatters.add(new WildcardFilter(e));
+						} else {
+							sitemapExlusions.add(e);
+						}
 					}
 				}
-				if (strExclusions!=null && strExclusions.length()>0)
+				
+				
 				
 				projectPath=project.getLocation().toString();
 
