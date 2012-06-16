@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse-web-kit
 Bundle-SymbolicName: eclipse-web-kit; singleton:=true
-Bundle-Version: 1.1.0
+Bundle-Version: 1.1.1
 Bundle-Activator: com.eclipse.web.kit.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

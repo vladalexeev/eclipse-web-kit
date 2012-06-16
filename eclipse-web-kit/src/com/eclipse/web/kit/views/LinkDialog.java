@@ -1,6 +1,8 @@
 package com.eclipse.web.kit.views;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -144,6 +146,19 @@ public class LinkDialog extends Dialog {
 	public boolean open () {
 		shell.open();
 		Display display = getParent().getDisplay();
+		
+		Clipboard clipboard=new Clipboard(display);
+		TextTransfer textTransfer=TextTransfer.getInstance();
+		String str=(String)clipboard.getContents(textTransfer);
+		if (str!=null && (str.startsWith("http://") || str.startsWith("https://"))) {
+			textHyperlink.setText(str);
+			
+			if (textText.getText()==null || textText.getText().length()==0) {
+				textText.setText(str);
+			}
+		}
+		clipboard.dispose();
+		
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
 		}

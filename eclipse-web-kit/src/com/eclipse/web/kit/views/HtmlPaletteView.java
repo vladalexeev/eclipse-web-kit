@@ -229,9 +229,9 @@ public class HtmlPaletteView extends ViewPart {
 		String selectionText=getActiveSelectionText();
 		dialog.setText(selectionText);
 		
-		if (selectionText!=null && selectionText.startsWith("http://")) {
+		if (selectionText!=null && (selectionText.startsWith("http://") || selectionText.startsWith("https://"))) {
 			dialog.setHyperlink(selectionText);
-		}
+		} 		
 		
 		if (dialog.open()) {
 			String resultText=dialog.getResultText();
