@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="WINDOWS-1251" standalone="no"?>
+<jardesc>
+    <jar path="D:/Vlad-work/eclipse/eclipse-web-kit-1.1.1.jar"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/eclipse-web-kit/eclipse-web-kit.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
+    <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
+    <selectedProjects/>
+    <manifest generateManifest="false" manifestLocation="/eclipse-web-kit/META-INF/MANIFEST.MF" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
+        <sealing sealJar="false">
+            <packagesToSeal/>
+            <packagesToUnSeal/>
+        </sealing>
+    </manifest>
+    <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
+        <file path="/eclipse-web-kit/.classpath"/>
+        <folder path="/eclipse-web-kit/icons"/>
+        <file path="/eclipse-web-kit/.project"/>
+        <folder path="/eclipse-web-kit/META-INF"/>
+        <javaElement handleIdentifier="=eclipse-web-kit/src"/>
+        <file path="/eclipse-web-kit/contexts.xml"/>
+        <file path="/eclipse-web-kit/build.properties"/>
+        <file path="/eclipse-web-kit/plugin.xml"/>
+    </selectedElements>
+</jardesc>
