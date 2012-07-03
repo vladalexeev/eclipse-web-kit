@@ -19,6 +19,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 import com.eclipse.web.kit.Activator;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
@@ -28,6 +29,7 @@ import com.eclipse.web.kit.util.LinkExtractor;
 import com.eclipse.web.kit.util.LinkInfo;
 import com.eclipse.web.kit.util.LinkPattern;
 import com.eclipse.web.kit.util.StringUtil;
+import com.eclipse.web.kit.util.SwtUtil;
 import com.eclipse.web.kit.util.WildcardFilter;
 
 public class TestBrokenLinksAction extends ProjectPopupAction {
@@ -190,6 +192,8 @@ public class TestBrokenLinksAction extends ProjectPopupAction {
 	public void run(IAction action) {
 		TestBrokenLinksJob job=new TestBrokenLinksJob("Test broken links");
 		job.schedule();
+		PlatformUI.getWorkbench().getProgressService().showInDialog(
+				SwtUtil.getActiveWorkbenchWindow().getShell(), job);
 	}
 
 }
