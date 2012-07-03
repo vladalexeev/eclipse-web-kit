@@ -22,6 +22,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 import com.eclipse.web.kit.Activator;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
@@ -195,5 +196,7 @@ public class GenerateSiteMap extends ProjectPopupAction {
 		
 		JobGenerateSiteMap job=new JobGenerateSiteMap("Ganerating sitemap");
 		job.schedule();
+		PlatformUI.getWorkbench().getProgressService().showInDialog(
+				SwtUtil.getActiveWorkbenchWindow().getShell(), job);
 	}
 }

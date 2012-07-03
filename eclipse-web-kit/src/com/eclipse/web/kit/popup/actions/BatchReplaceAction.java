@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 import com.eclipse.web.kit.Activator;
 import com.eclipse.web.kit.overlay.ProjectPropertyStore;
@@ -305,6 +306,8 @@ public class BatchReplaceAction extends FolderPopupAction {
 			job.textForReplace=dialog.getResultReplaceText();
 			job.recursive=dialog.isResultRecursiveSearch();
 			job.schedule();
+			PlatformUI.getWorkbench().getProgressService().showInDialog(
+					SwtUtil.getActiveWorkbenchWindow().getShell(), job);
 			
 		} else {
 			System.out.println("Canceled");
