@@ -68,6 +68,9 @@ public class TestBrokenLinksAction extends ProjectPopupAction {
 			String[] childFileNames=directoryFile.list();
 			
 			for (String childFileName:childFileNames) {
+				if (childFileName.indexOf("y.morytah")>=0 && directory.indexOf("english")>=0) {
+					System.out.println("y.morytah");
+				}
 				File targetFile=new File(directoryFile,childFileName);
 				File relativeTargetFile=new File(directory, childFileName);
 				if (targetFile.isDirectory()) {
@@ -75,7 +78,7 @@ public class TestBrokenLinksAction extends ProjectPopupAction {
 					processSubdirectories(monitor, project, relativeTargetFile.toString());
 				} else {
 					String ext="";
-					int index=childFileName.indexOf('.');
+					int index=childFileName.lastIndexOf('.');
 					if (index>=0) {
 						ext=childFileName.substring(index+1);
 					}
