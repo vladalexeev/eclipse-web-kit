@@ -13,6 +13,7 @@ public class PreferenceConstants {
 	public static final String PAGE_ID_INTERNAL="com.eclipse.web.kit.preferences.internal";
 	public static final String PAGE_ID_SITEMAP="com.eclipse.web.kit.preferences.sitemap";
 	public static final String PAGE_ID_BATCH_REPLACE="com.eclipse.web.kit.preferences.batchreplace";
+	public static final String PAGE_ID_NEWS_FEEDS="com.eclipse.web.kit.preferences.newsfeeds";
 	
 	
 	public static final String P_TEMPLATE_LINK = PAGE_ID_HTML_PALETTE+".templateLink";
@@ -49,6 +50,8 @@ public class PreferenceConstants {
 	public static final String P_BATCH_REPLACE_REPLACE_TEXT=PAGE_ID_BATCH_REPLACE+".replaceText";
 	public static final String P_BATCH_REPLACE_EXTENSIONS=PAGE_ID_BATCH_REPLACE+".extensions";
 	
+	public static final String P_NEWS_FEEDS_DESCRIPTIONS=PAGE_ID_NEWS_FEEDS+".descriptions";
+	
 	
 	
 	public static final QualifiedName Q_TEMPLATE_LINK=new QualifiedName(PAGE_ID_HTML_PALETTE, P_TEMPLATE_LINK);
@@ -69,4 +72,6 @@ public class PreferenceConstants {
 	
 	public static final QualifiedName Q_SITEMAP_EXCLUSIONS=new QualifiedName(PAGE_ID_EXCLUSIONS, P_SITEMAP_EXCLUSIONS);
 	public static final QualifiedName Q_BROKEN_LINK_EXCLUSIONS=new QualifiedName(PAGE_ID_EXCLUSIONS, P_BROKEN_LINK_EXCLUSIONS);
+	
+	public static final QualifiedName Q_NEWS_FEEDS_DESCRIPTIONS=new QualifiedName(PAGE_ID_NEWS_FEEDS, P_NEWS_FEEDS_DESCRIPTIONS);
 }

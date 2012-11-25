@@ -1,0 +1,50 @@
+<xml>
+	<feed-name>English news</feed-name>
+	<author>Vlad Alexeev</author>
+	<files>
+	  <file>
+	    <type>rss</type>
+	    <path>english/rss1.xml</path>
+	    <pattern>${message}</pattern>
+	  </file>
+	  <file>
+	    <type>html</type>
+	    <max>4</max>
+	    <path>english/index.html</path>
+	    <feedSectionStart><![CDATA[<!-- feedSection -->]]></feedSectionStart>
+	    <feedSectionEnd><![CDATA[<!-- /feedSection -->]]></feedSectionEnd>
+	    <feedDelimiter><![CDATA[<!-- feedDelimiter -->]]></feedDelimiter>
+	    <pattern><![CDATA[
+	      <p>
+	      ${patternIcon}
+	      ${date} <a href="${link}">${message}</a>
+	      </p>
+	      <div style="clear:both;"></div>
+	      ]]>
+	    </pattern>
+	    <patternIcon><![CDATA[
+	      <a href="${link}"><img href="${icon}" border="0" width="${iconWidth}" height="${iconHeight}" align="left"/></a>
+	    ]]>
+	    </patternIcon>
+	  </file>
+	  <file>
+	    <type>html</type>
+	    <path>english/news/index.html</path>
+	    <feedSectionStart><![CDATA[<!-- feedSection -->]]></feedSectionStart>
+	    <feedSectionEnd><![CDATA[<!-- /feedSection -->]]></feedSectionEnd>
+	    <feedDelimiter><![CDATA[<!-- feedDelimiter -->]]></feedDelimiter>
+	    <pattern><![CDATA[
+	      <p>
+	      ${patternIcon}
+	      ${date} <a href="${link}">${message}</a>
+	      </p>
+	      <div style="clear:both;"></div>
+	      ]]>
+	    </pattern>
+	    <patternIcon><![CDATA[
+	      <a href="${link}"><img href="${icon}" border="0" width="${iconWidth}" height="${iconHeight}" align="left"/></a>
+	    ]]>
+	    </patternIcon>
+	  </file>
+	</files>
+</xml>

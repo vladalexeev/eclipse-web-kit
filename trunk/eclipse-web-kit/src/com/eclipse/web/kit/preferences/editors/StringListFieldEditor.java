@@ -77,6 +77,8 @@ public class StringListFieldEditor extends FieldEditor {
 
 	private IInputValidator validator=null;
 	
+	private AddActionHandler addActionHandler=null;
+	
 	private boolean enabled=true;
 
 	/***
@@ -270,9 +272,16 @@ public class StringListFieldEditor extends FieldEditor {
 	 * Adds the string in the text field to the list.
 	 */
 	private void doAdd() {
-		InputDialog dialog=new InputDialog(parent.getShell(), "Text input", "Enter text", "", validator);
-		if (dialog.open()==Window.OK) {
-			list.add(dialog.getValue());
+		if (addActionHandler==null) {
+			InputDialog dialog=new InputDialog(parent.getShell(), "Text input", "Enter text", "", validator);
+			if (dialog.open()==Window.OK) {
+				list.add(dialog.getValue());
+			}
+		} else {
+			String str=addActionHandler.doAdd();
+			if (str!=null) {
+				list.add(str);
+			}
 		}
 	}
 	
@@ -369,5 +378,9 @@ public class StringListFieldEditor extends FieldEditor {
 		
 		this.enabled=enabled;
 		selectionChanged();
+	}
+	
+	public void setAddActionHandler(AddActionHandler handler) {
+		this.addActionHandler=handler;
 	}
 }
