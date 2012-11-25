@@ -31,8 +31,6 @@ public class NewsFeedsPreferences extends FieldEditorPropertyPage {
 			public String doAdd() {
 				String fileName=FileUtil.selectAnyFile(new Shell());
 				IProject project=SwtUtil.getActiveProject();
-				System.out.println("Selecte file name = "+fileName);
-				System.out.println("project path = "+project.getLocation().toString());
 				return FileUtil.createRelativePath2(project.getLocation().toString(), fileName);
 			}
 		});
