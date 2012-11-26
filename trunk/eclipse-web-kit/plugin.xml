@@ -106,6 +106,24 @@
                menubarPath="eclipse-web-kit.menu.folder/group.folder">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="eclipse-web-kit.contribution.file"
+            objectClass="org.eclipse.core.resources.IFile">
+         <menu
+               id="eclipse-web-kit.menu.file"
+               label="Eclipse Web Kit">
+            <separator
+                  name="group.file">
+            </separator>
+         </menu>
+         <action
+               class="com.eclipse.web.kit.popup.actions.PublishNewsAction"
+               id="com.eclipse.web.kit.popup.actions.PublishNewsAction"
+               label="Publish news ..."
+               menubarPath="eclipse-web-kit.menu.file/group.folder">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          id="brokenlink"
