@@ -3,7 +3,9 @@ package com.eclipse.web.kit.util.test;
 import org.junit.Test;
 
 import com.eclipse.web.kit.util.HtmlParser;
+import com.eclipse.web.kit.util.HtmlSimpleElement;
 import com.eclipse.web.kit.util.HtmlSimpleTag;
+import com.eclipse.web.kit.util.HtmlSimpleText;
 
 import static org.junit.Assert.*;
 
@@ -13,41 +15,62 @@ public class TestHtmlParser {
 	public void testSimpleHtml() {
 		String testHtml="<html><a href=\"test.html\"></a></html>";
 		HtmlParser parser=new HtmlParser();
-		HtmlSimpleTag[] tags=parser.parse(testHtml);
+		HtmlSimpleElement[] elems=parser.parse(testHtml);
 		
-		assertEquals(4, tags.length);
-		assertEquals("html", tags[0].getTagName());
-		assertEquals(0, tags[0].getAttributes().size());
+		assertEquals(4, elems.length);
+		assertTrue(elems[0] instanceof HtmlSimpleTag);
+		assertEquals("html", ((HtmlSimpleTag)elems[0]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[0]).getAttributes().size());
 
-		assertEquals("a", tags[1].getTagName());
-		assertEquals(1, tags[1].getAttributes().size());
-		assertEquals("test.html", tags[1].getAttributes().get("href"));
+		assertTrue(elems[1] instanceof HtmlSimpleTag);
+		assertEquals("a", ((HtmlSimpleTag)elems[1]).getTagName());
+		assertEquals(1, ((HtmlSimpleTag)elems[1]).getAttributes().size());
+		assertEquals("test.html", ((HtmlSimpleTag)elems[1]).getAttributes().get("href"));
 		
-		assertEquals("/a", tags[2].getTagName());
-		assertEquals(0, tags[2].getAttributes().size());
+		assertTrue(elems[2] instanceof HtmlSimpleTag);
+		assertEquals("/a", ((HtmlSimpleTag)elems[2]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[2]).getAttributes().size());
 		
-		assertEquals("/html", tags[3].getTagName());
-		assertEquals(0, tags[3].getAttributes().size());
+		assertTrue(elems[3] instanceof HtmlSimpleTag);
+		assertEquals("/html", ((HtmlSimpleTag)elems[3]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[3]).getAttributes().size());
 	}
 	
 	@Test
 	public void testSimpleHtmlWithSpaces() {
-		String testHtml="  <html>  <a   href  = \"test.html\" >qqq  </a>  </html>";
+		String testHtml="  <html> 123 <a   href  = \"test.html\" > qwe </a> 456 </html>";
 		HtmlParser parser=new HtmlParser();
-		HtmlSimpleTag[] tags=parser.parse(testHtml);
+		HtmlSimpleElement[] elems=parser.parse(testHtml);
 		
-		assertEquals(4, tags.length);
-		assertEquals("html", tags[0].getTagName());
-		assertEquals(0, tags[0].getAttributes().size());
+		assertEquals(8, elems.length);
+		
+		assertTrue(elems[0] instanceof HtmlSimpleText);
+		assertEquals("  ", ((HtmlSimpleText)elems[0]).getText());
+		
+		assertTrue(elems[1] instanceof HtmlSimpleTag);
+		assertEquals("html", ((HtmlSimpleTag)elems[1]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[1]).getAttributes().size());
 
-		assertEquals("a", tags[1].getTagName());
-		assertEquals(1, tags[1].getAttributes().size());
-		assertEquals("test.html", tags[1].getAttributes().get("href"));
+		assertTrue(elems[2] instanceof HtmlSimpleText);
+		assertEquals(" 123 ", ((HtmlSimpleText)elems[2]).getText());
+
+		assertTrue(elems[3] instanceof HtmlSimpleTag);
+		assertEquals("a", ((HtmlSimpleTag)elems[3]).getTagName());
+		assertEquals(1, ((HtmlSimpleTag)elems[3]).getAttributes().size());
+		assertEquals("test.html", ((HtmlSimpleTag)elems[3]).getAttributes().get("href"));
 		
-		assertEquals("/a", tags[2].getTagName());
-		assertEquals(0, tags[2].getAttributes().size());
+		assertTrue(elems[4] instanceof HtmlSimpleText);
+		assertEquals(" qwe ", ((HtmlSimpleText)elems[4]).getText());
 		
-		assertEquals("/html", tags[3].getTagName());
-		assertEquals(0, tags[3].getAttributes().size());
+		assertTrue(elems[5] instanceof HtmlSimpleTag);
+		assertEquals("/a", ((HtmlSimpleTag)elems[5]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[5]).getAttributes().size());
+
+		assertTrue(elems[6] instanceof HtmlSimpleText);
+		assertEquals(" 456 ", ((HtmlSimpleText)elems[6]).getText());
+
+		assertTrue(elems[7] instanceof HtmlSimpleTag);
+		assertEquals("/html", ((HtmlSimpleTag)elems[7]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[7]).getAttributes().size());
 	}
 }

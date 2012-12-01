@@ -2,7 +2,7 @@ package com.eclipse.web.kit.util;
 
 import java.util.Map;
 
-public class HtmlSimpleTag {
+public class HtmlSimpleTag implements HtmlSimpleElement {
 	private String tagName;
 	private Map<String,String> attributes;
 	

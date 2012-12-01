@@ -1,5 +1,11 @@
 package com.eclipse.web.kit.views;
 
+import java.io.IOException;
+
+import org.eclipse.core.commands.operations.OperationStatus;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -18,10 +24,15 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.eclipse.web.kit.overlay.ProjectPropertyStore;
+import com.eclipse.web.kit.util.HtmlParser;
+import com.eclipse.web.kit.util.HtmlSimpleElement;
+import com.eclipse.web.kit.util.HtmlSimpleTag;
+import com.eclipse.web.kit.util.HtmlSimpleText;
 
 public class PublishNewsDialog extends Dialog {
 
 	private ProjectPropertyStore store;
+	private IFile file;
 	
 	private Shell shell;
 	
@@ -35,10 +46,10 @@ public class PublishNewsDialog extends Dialog {
 	private Combo comboAnchor;
 	
 	private Label labelTitle;
-	private Text textTitle;
+	private Combo comboTitle;
 
 	private Label labelCategory;
-	private Text textCategory;
+	private Combo comboCategory;
 	
 	private Label labelText;
 	private Text textText;
@@ -49,10 +60,12 @@ public class PublishNewsDialog extends Dialog {
 	private Button buttonCancel;
 
 	
-	public PublishNewsDialog(Shell parent, ProjectPropertyStore store) {
+	public PublishNewsDialog(Shell parent, ProjectPropertyStore store, IFile file) {
 		super(parent);
 		this.store=store;
+		this.file=file;
 		createControls();
+		fillDialogFields();
 	}
 	
 	private void createControls() {
@@ -105,21 +118,21 @@ public class PublishNewsDialog extends Dialog {
 		labelTitle=new Label(shell, SWT.NONE);
 		labelTitle.setText("Title");
 		
-		GridData textTitleGD=new GridData();
-		textTitleGD.horizontalSpan=2;
-		textTitleGD.horizontalAlignment=GridData.FILL;
-		textTitle=new Text(shell, SWT.SINGLE| SWT.BORDER);
-		textTitle.setLayoutData(textTitleGD);
+		GridData comboTitleGD=new GridData();
+		comboTitleGD.horizontalSpan=2;
+		comboTitleGD.horizontalAlignment=GridData.FILL;
+		comboTitle=new Combo(shell, SWT.SINGLE| SWT.BORDER);
+		comboTitle.setLayoutData(comboTitleGD);
 
 		//Category
 		labelCategory=new Label(shell, SWT.NONE);
 		labelCategory.setText("Category");
 		
-		GridData textCategoryGD=new GridData();
-		textCategoryGD.horizontalSpan=2;
-		textCategoryGD.horizontalAlignment=GridData.FILL;
-		textCategory=new Text(shell, SWT.SINGLE| SWT.BORDER);
-		textCategory.setLayoutData(textCategoryGD);
+		GridData comboCategoryGD=new GridData();
+		comboCategoryGD.horizontalSpan=2;
+		comboCategoryGD.horizontalAlignment=GridData.FILL;
+		comboCategory=new Combo(shell, SWT.SINGLE| SWT.BORDER);
+		comboCategory.setLayoutData(comboCategoryGD);
 		
 		//Text		
 		GridData labelTextGD=new GridData();
@@ -135,7 +148,7 @@ public class PublishNewsDialog extends Dialog {
 		textTextGD.horizontalAlignment=GridData.FILL;
 		textTextGD.widthHint=600;
 		textTextGD.heightHint=200;
-		textText=new Text(shell, SWT.MULTI| SWT.BORDER);
+		textText=new Text(shell, SWT.MULTI| SWT.BORDER | SWT.WRAP);
 		textText.setLayoutData(textTextGD);
 		
 		
@@ -190,6 +203,66 @@ public class PublishNewsDialog extends Dialog {
 		Display display = getParent().getDisplay();
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) display.sleep();
+		}
+	}
+	
+	private String getDescription(HtmlSimpleElement[] elems) {
+		for (HtmlSimpleElement e:elems) {
+			if (e instanceof HtmlSimpleTag) {
+				HtmlSimpleTag tag=(HtmlSimpleTag) e;
+				if (tag.getTagName().equalsIgnoreCase("meta") && 
+						tag.getAttributes().get("name")!=null && 
+						tag.getAttributes().get("name").equals("description")) {
+					return tag.getAttributes().get("content");
+				}
+			}
+		}
+		
+		return null;
+	}
+	
+	private String getTitle(HtmlSimpleElement[] elems) {
+		String result=null;
+		for (HtmlSimpleElement e:elems) {
+			if (e instanceof HtmlSimpleTag) {
+				HtmlSimpleTag tag=(HtmlSimpleTag) e;
+				if (tag.getTagName().equalsIgnoreCase("title")) {
+					result="";
+				} else if (tag.getTagName().equalsIgnoreCase("/title")) {
+					return result;
+				}
+			} else if (e instanceof HtmlSimpleText) {
+				if (result!=null) {
+					HtmlSimpleText text=(HtmlSimpleText)e;
+					result+=text.getText();
+				}
+			}
+		}
+		
+		return result;
+	}
+	
+	private void fillDialogFields() {
+		HtmlParser htmlParser=new HtmlParser();
+		try {
+			labelFileNameValue.setText(file.getFullPath().toString());
+			
+			HtmlSimpleElement[] fileElements=htmlParser.parse(file);
+			
+			String description=getDescription(fileElements);
+			if (description!=null) {
+				textText.setText(description);
+			}
+			
+			String title=getTitle(fileElements);
+			if (title!=null) {
+				comboTitle.setText(title);
+			}
+			
+		} catch (IOException e) {
+			ErrorDialog.openError(shell, "Error", "Error loading file",  
+					new OperationStatus(IStatus.ERROR, "eclipse-web-kit", 0, "Error loading file", e));
+			throw new RuntimeException(e);
 		}
 	}
 }

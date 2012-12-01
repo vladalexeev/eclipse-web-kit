@@ -1,7 +1,10 @@
 package com.eclipse.web.kit.util;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import org.eclipse.core.resources.IFile;
 
 public class HtmlParser {
 	
@@ -18,12 +21,13 @@ public class HtmlParser {
 	
 	private ParserState state;
 	
-	private ArrayList<HtmlSimpleTag> currentTags=new ArrayList<HtmlSimpleTag>();
+	private ArrayList<HtmlSimpleElement> currentTags=new ArrayList<HtmlSimpleElement>();
 	
 	private String currentTag=null;
 	private HashMap<String,String> currentAttributes=null;
 	private String currentAttrName=null;
 	private String currentAttrValue=null;
+	private String currentText=null;
 	
 	private void processCurrentChar(char c) {
 		switch (state) {
@@ -58,8 +62,19 @@ public class HtmlParser {
 	
 	private void processCurrentChat_SearchTagStart(char c) {
 		if (c=='<') {
+			if (currentText!=null && currentText.length()>0) {
+				currentTags.add(new HtmlSimpleText(currentText));
+				currentText=null;
+			}
+			
 			state=ParserState.SEARCH_TAG_END;
 			currentTag="";
+		} else {
+			if (currentText==null) {
+				currentText=""+c;
+			} else {
+				currentText+=c;
+			}
 		}
 	}
 	
@@ -175,7 +190,7 @@ public class HtmlParser {
 		}
 	}
 
-	public HtmlSimpleTag[] parse(String html) {
+	public HtmlSimpleElement[] parse(String html) {
 		state=ParserState.SEARCH_TAG_START;
 
 		currentTag=null;
@@ -183,13 +198,23 @@ public class HtmlParser {
 		currentAttrName=null;
 		currentAttrValue=null;
 		
-		currentTags=new ArrayList<HtmlSimpleTag>();
+		currentTags=new ArrayList<HtmlSimpleElement>();
 
 		for (int index=0; index<html.length(); index++) {
 			char c=html.charAt(index);
 			processCurrentChar(c);
 		}
 		
-		return currentTags.toArray(new HtmlSimpleTag[currentTags.size()]);
+		if (state==ParserState.SEARCH_TAG_START && currentText!=null && currentText.length()>0) {
+			currentTags.add(new HtmlSimpleText(currentText));
+		}
+		
+		return currentTags.toArray(new HtmlSimpleElement[currentTags.size()]);
+	}
+	
+	public HtmlSimpleElement[] parse(IFile file) throws IOException {
+		String filePath=file.getLocation().toOSString();
+		String fileContent=FileLoader.loadFile(filePath);
+		return parse(fileContent);
 	}
 }
