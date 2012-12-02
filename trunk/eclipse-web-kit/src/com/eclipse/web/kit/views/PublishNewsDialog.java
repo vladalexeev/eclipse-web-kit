@@ -1,6 +1,7 @@
 package com.eclipse.web.kit.views;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.eclipse.core.commands.operations.OperationStatus;
 import org.eclipse.core.resources.IFile;
@@ -9,6 +10,8 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.ShellEvent;
+import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -24,6 +27,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.eclipse.web.kit.overlay.ProjectPropertyStore;
+import com.eclipse.web.kit.preferences.PreferenceConstants;
+import com.eclipse.web.kit.util.Entities;
 import com.eclipse.web.kit.util.HtmlParser;
 import com.eclipse.web.kit.util.HtmlSimpleElement;
 import com.eclipse.web.kit.util.HtmlSimpleTag;
@@ -37,7 +42,7 @@ public class PublishNewsDialog extends Dialog {
 	private Shell shell;
 	
 	private Label labelNewsProfile;
-	private Combo comboNewsProfile;
+	private Combo comboNewsFeed;
 	
 	private Label labelFileName;
 	private Label labelFileNameValue;
@@ -90,8 +95,8 @@ public class PublishNewsDialog extends Dialog {
 		comboNewsProfileGD.horizontalSpan=2;
 		//comboNewsProfileGD.horizontalAlignment=GridData.FILL;
 		comboNewsProfileGD.widthHint=400;
-		comboNewsProfile=new Combo(shell, SWT.READ_ONLY);
-		comboNewsProfile.setLayoutData(comboNewsProfileGD);
+		comboNewsFeed=new Combo(shell, SWT.READ_ONLY);
+		comboNewsFeed.setLayoutData(comboNewsProfileGD);
 		
 		
 		//File name for news
@@ -184,6 +189,29 @@ public class PublishNewsDialog extends Dialog {
 				shell.close();
 			}
 		});
+		
+		shell.addShellListener(new ShellListener() {
+			@Override
+			public void shellIconified(ShellEvent e) {
+			}
+			
+			@Override
+			public void shellDeiconified(ShellEvent e) {
+			}
+			
+			@Override
+			public void shellDeactivated(ShellEvent e) {
+			}
+			
+			@Override
+			public void shellClosed(ShellEvent e) {
+				onShellClosed();
+			}
+			
+			@Override
+			public void shellActivated(ShellEvent e) {
+			}
+		});
 				
 		shell.setDefaultButton(buttonPublish);
 
@@ -246,23 +274,110 @@ public class PublishNewsDialog extends Dialog {
 		HtmlParser htmlParser=new HtmlParser();
 		try {
 			labelFileNameValue.setText(file.getFullPath().toString());
+
+			String strNewsFeeds=store.getString(PreferenceConstants.P_NEWS_FEEDS_DESCRIPTIONS);
+			if (strNewsFeeds!=null) {
+				String[] newsFeeds=strNewsFeeds.split("\0");
+				for (String newsFeed:newsFeeds) {
+					comboNewsFeed.add(newsFeed);
+				}
+				
+				if (newsFeeds.length>0) {
+					comboNewsFeed.select(0);
+				}
+			}
 			
 			HtmlSimpleElement[] fileElements=htmlParser.parse(file);
 			
 			String description=getDescription(fileElements);
 			if (description!=null) {
-				textText.setText(description);
+				textText.setText(Entities.HTML40.unescape(description));
 			}
 			
 			String title=getTitle(fileElements);
 			if (title!=null) {
-				comboTitle.setText(title);
+				comboTitle.setText(Entities.HTML40.unescape(title));
+			}
+			
+			String strRecentTitles=store.getString(PreferenceConstants.P_NEWS_FEEDS_RECENT_TITLES);
+			if (strRecentTitles!=null) {
+				String[] recentTitles=strRecentTitles.split("\0");
+				for (String t:recentTitles) {
+					comboTitle.add(t);
+				}
+			}
+			
+			String strRecentCategories=store.getString(PreferenceConstants.P_NEWS_FEEDS_RECENT_CATEGORIES);
+			if (strRecentCategories!=null) {
+				String[] recentCategories=strRecentCategories.split("\0");
+				for (String c:recentCategories) {
+					comboCategory.add(c);
+				}
 			}
 			
 		} catch (IOException e) {
 			ErrorDialog.openError(shell, "Error", "Error loading file",  
 					new OperationStatus(IStatus.ERROR, "eclipse-web-kit", 0, "Error loading file", e));
 			throw new RuntimeException(e);
+		}
+	}
+	
+	private void onShellClosed() {
+		String currentTitle=comboTitle.getText();
+		if (currentTitle!=null && currentTitle.trim().length()>0) {
+			currentTitle=currentTitle.trim();			
+			String[] recentTitles=comboTitle.getItems();
+			ArrayList<String> newTitles=new ArrayList<String>(); 
+			newTitles.add(currentTitle);
+			for (String t:recentTitles) {
+				if (!t.equals(currentTitle)) {
+					newTitles.add(t);
+				}
+			}
+
+			String paramTitles="";
+			for (int i=0; i<newTitles.size() && i<10; i++) {
+				if (i>0) {
+					paramTitles+="\0";
+				}
+				paramTitles+=newTitles.get(i);
+			}
+
+			
+			store.setValue(PreferenceConstants.P_NEWS_FEEDS_RECENT_TITLES, 
+					paramTitles);
+		}
+
+		String currentCategory=comboCategory.getText();
+		if (currentCategory!=null && currentCategory.trim().length()>0) {
+			currentCategory=currentCategory.trim();			
+			String[] recentCategories=comboCategory.getItems();
+			ArrayList<String> newCategories=new ArrayList<String>(); 
+			newCategories.add(currentCategory);
+			for (String c:recentCategories) {
+				if (!c.equals(currentCategory)) {
+					newCategories.add(c);
+				}
+			}
+
+			String paramCategories="";
+			for (int i=0; i<newCategories.size() && i<10; i++) {
+				if (i>0) {
+					paramCategories+="\0";
+				}
+				paramCategories+=newCategories.get(i);
+			}
+
+			
+			store.setValue(PreferenceConstants.P_NEWS_FEEDS_RECENT_CATEGORIES, 
+					paramCategories);
+		}
+
+		try {
+			store.save();
+		} catch (IOException e) {
+			ErrorDialog.openError(shell, "Warning", "Error saving property store",  
+					new OperationStatus(IStatus.ERROR, "eclipse-web-kit", 0, "Error saving property store", e));
 		}
 	}
 }

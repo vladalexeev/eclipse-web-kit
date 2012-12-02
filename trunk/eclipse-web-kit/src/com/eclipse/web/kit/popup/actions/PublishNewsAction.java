@@ -17,7 +17,7 @@ public class PublishNewsAction extends FilePopupAction {
 	public void run(IAction action) {
 		System.out.println("PublishNewsAction");
 		ProjectPropertyStore store=new ProjectPropertyStore(file.getProject(), Activator.getDefault().getPreferenceStore(), 
-				PreferenceConstants.PAGE_ID_BATCH_REPLACE);
+				PreferenceConstants.PAGE_ID_NEWS_FEEDS);
 		
 		PublishNewsDialog dialog=new PublishNewsDialog(SwtUtil.getActiveWorkbenchWindow().getShell(), store, file);
 		dialog.open();

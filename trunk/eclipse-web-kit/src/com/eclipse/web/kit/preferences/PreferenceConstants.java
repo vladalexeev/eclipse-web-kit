@@ -51,6 +51,8 @@ public class PreferenceConstants {
 	public static final String P_BATCH_REPLACE_EXTENSIONS=PAGE_ID_BATCH_REPLACE+".extensions";
 	
 	public static final String P_NEWS_FEEDS_DESCRIPTIONS=PAGE_ID_NEWS_FEEDS+".descriptions";
+	public static final String P_NEWS_FEEDS_RECENT_TITLES=PAGE_ID_NEWS_FEEDS+".recentTitles";
+	public static final String P_NEWS_FEEDS_RECENT_CATEGORIES=PAGE_ID_NEWS_FEEDS+".recentCategories";
 	
 	
 	
