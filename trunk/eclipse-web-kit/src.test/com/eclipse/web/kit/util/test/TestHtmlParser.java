@@ -2,10 +2,11 @@ package com.eclipse.web.kit.util.test;
 
 import org.junit.Test;
 
-import com.eclipse.web.kit.util.HtmlParser;
-import com.eclipse.web.kit.util.HtmlSimpleElement;
-import com.eclipse.web.kit.util.HtmlSimpleTag;
-import com.eclipse.web.kit.util.HtmlSimpleText;
+import com.eclipse.web.kit.util.html.parser.HtmlParser;
+import com.eclipse.web.kit.util.html.parser.HtmlSimpleComment;
+import com.eclipse.web.kit.util.html.parser.HtmlSimpleElement;
+import com.eclipse.web.kit.util.html.parser.HtmlSimpleTag;
+import com.eclipse.web.kit.util.html.parser.HtmlSimpleText;
 
 import static org.junit.Assert.*;
 
@@ -73,4 +74,25 @@ public class TestHtmlParser {
 		assertEquals("/html", ((HtmlSimpleTag)elems[7]).getTagName());
 		assertEquals(0, ((HtmlSimpleTag)elems[7]).getAttributes().size());
 	}
+	
+	@Test
+	public void testParseComment() {
+		String testHtml="<html><!-- 123 --></html>";
+		HtmlParser parser=new HtmlParser();
+		HtmlSimpleElement[] elems=parser.parse(testHtml);
+		
+		assertEquals(3, elems.length);
+		
+		assertTrue(elems[0] instanceof HtmlSimpleTag);
+		assertEquals("html", ((HtmlSimpleTag)elems[0]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[0]).getAttributes().size());
+
+		assertTrue(elems[1] instanceof HtmlSimpleComment);
+		assertEquals(" 123 ", ((HtmlSimpleComment)elems[1]).getComment());
+		
+		assertTrue(elems[2] instanceof HtmlSimpleTag);
+		assertEquals("/html", ((HtmlSimpleTag)elems[2]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[2]).getAttributes().size());
+	}
+	
 }

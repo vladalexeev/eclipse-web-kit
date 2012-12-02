@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import com.eclipse.web.kit.util.Entities;
+import com.eclipse.web.kit.util.html.Entities;
 
 public class TestEntities {
 
