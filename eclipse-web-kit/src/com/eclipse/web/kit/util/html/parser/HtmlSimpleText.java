@@ -1,4 +1,4 @@
-package com.eclipse.web.kit.util;
+package com.eclipse.web.kit.util.html.parser;
 
 public class HtmlSimpleText implements HtmlSimpleElement {
 	private String text;

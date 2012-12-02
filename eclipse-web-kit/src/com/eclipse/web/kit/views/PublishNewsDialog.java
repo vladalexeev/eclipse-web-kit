@@ -28,11 +28,11 @@ import org.eclipse.swt.widgets.Text;
 
 import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
-import com.eclipse.web.kit.util.Entities;
-import com.eclipse.web.kit.util.HtmlParser;
-import com.eclipse.web.kit.util.HtmlSimpleElement;
-import com.eclipse.web.kit.util.HtmlSimpleTag;
-import com.eclipse.web.kit.util.HtmlSimpleText;
+import com.eclipse.web.kit.util.html.Entities;
+import com.eclipse.web.kit.util.html.parser.HtmlParser;
+import com.eclipse.web.kit.util.html.parser.HtmlSimpleElement;
+import com.eclipse.web.kit.util.html.parser.HtmlSimpleTag;
+import com.eclipse.web.kit.util.html.parser.HtmlSimpleText;
 
 public class PublishNewsDialog extends Dialog {
 

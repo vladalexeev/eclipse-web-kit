@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.eclipse.web.kit.util;
+package com.eclipse.web.kit.util.html;
 
 import java.io.IOException;
 import java.io.StringWriter;

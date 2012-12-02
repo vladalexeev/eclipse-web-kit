@@ -1,4 +1,4 @@
-package com.eclipse.web.kit.util;
+package com.eclipse.web.kit.util.html.parser;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -6,11 +6,14 @@ import java.util.HashMap;
 
 import org.eclipse.core.resources.IFile;
 
+import com.eclipse.web.kit.util.FileLoader;
+
 public class HtmlParser {
 	
 	enum ParserState {
 		SEARCH_TAG_START,
 		SEARCH_TAG_END,
+		SEARCH_COMMENT_END,
 		SEARCH_ATTR_NAME_START,
 		SEARCH_ATTR_NAME_END,
 		SEARCH_ATTR_EQUALS,
@@ -36,6 +39,9 @@ public class HtmlParser {
 			break;
 		case SEARCH_TAG_END:
 			processCurrentChar_SearchTagEnd(c);
+			break;
+		case SEARCH_COMMENT_END:
+			processCurrentChar_SearchCommentEnd(c);
 			break;
 		case SEARCH_ATTR_NAME_START:
 			processCurrentChar_SearchAttrNameStart(c);
@@ -80,7 +86,12 @@ public class HtmlParser {
 	
 	private void processCurrentChar_SearchTagEnd(char c) {
 		if (c==' ' || c=='\r' || c=='\n' || c=='\t') {
-			state=ParserState.SEARCH_ATTR_NAME_START;
+			if (currentTag.equals("!--")) {
+				currentText=""+c;
+				state=ParserState.SEARCH_COMMENT_END;
+			} else {
+				state=ParserState.SEARCH_ATTR_NAME_START;
+			}
 		} else if (c=='>') {
 			storeCurrentTag();
 			state=ParserState.SEARCH_TAG_START;
@@ -151,6 +162,16 @@ public class HtmlParser {
 		} else if (c=='>') {
 			storeCurrentAttr();
 			storeCurrentTag();
+			state=ParserState.SEARCH_TAG_START;
+		}
+	}
+	
+	private void processCurrentChar_SearchCommentEnd(char c) {
+		currentText+=c;
+		if (currentText.endsWith("-->")) {
+			currentTags.add(new HtmlSimpleComment(currentText.substring(0,currentText.length()-3)));
+			currentTag=null;
+			currentText=null;
 			state=ParserState.SEARCH_TAG_START;
 		}
 	}
