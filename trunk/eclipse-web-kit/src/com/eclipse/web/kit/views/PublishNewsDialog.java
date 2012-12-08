@@ -155,8 +155,7 @@ public class PublishNewsDialog extends Dialog {
 		textTextGD.heightHint=200;
 		textText=new Text(shell, SWT.MULTI| SWT.BORDER | SWT.WRAP);
 		textText.setLayoutData(textTextGD);
-		
-		
+
 		//Bottom panel
 		GridData bottomGD=new GridData();
 		bottomGD.horizontalSpan=3;
@@ -312,6 +311,15 @@ public class PublishNewsDialog extends Dialog {
 				String[] recentCategories=strRecentCategories.split("\0");
 				for (String c:recentCategories) {
 					comboCategory.add(c);
+				}
+			}
+			
+			for (HtmlSimpleElement elem:fileElements) {
+				if (elem instanceof HtmlSimpleTag) {
+					HtmlSimpleTag tag=(HtmlSimpleTag) elem;
+					if (tag.getTagName().equals("a") && tag.getAttribute("name")!=null) {
+						comboAnchor.add(tag.getAttribute("name"));
+					}
 				}
 			}
 			

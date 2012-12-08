@@ -179,7 +179,7 @@ public class HtmlParser {
 	private void storeCurrentTag() {
 		if (currentTag!=null) {
 			HtmlSimpleTag tag=new HtmlSimpleTag();
-			tag.setTagName(currentTag);
+			tag.setTagName(currentTag.toLowerCase());
 			if (currentAttributes==null) {
 				tag.setAttributes(new HashMap<String, String>());
 			} else {
@@ -205,7 +205,7 @@ public class HtmlParser {
 				currentAttributes=new HashMap<String, String>();
 			}
 			
-			currentAttributes.put(currentAttrName, currentAttrValue);
+			currentAttributes.put(currentAttrName.toLowerCase(), currentAttrValue);
 			currentAttrName=null;
 			currentAttrValue=null;
 		}

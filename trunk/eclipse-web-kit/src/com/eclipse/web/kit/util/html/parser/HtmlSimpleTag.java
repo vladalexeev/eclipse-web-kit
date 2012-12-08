@@ -25,4 +25,12 @@ public class HtmlSimpleTag implements HtmlSimpleElement {
 	public void setAttributes(Map<String, String> attributes) {
 		this.attributes = attributes;
 	}
+	
+	public String getAttribute(String name) {
+		if (attributes==null) {
+			return null;
+		}
+		
+		return attributes.get(name);
+	}
 }
