@@ -1,19 +1,21 @@
 <xml>
-	<feed-name>English news</feed-name>
-	<author>Vlad Alexeev</author>
+	<feedName>Test feed</feedName>
+	<defaultFolder>rootFolder/subFolder</defaultFolder>
+	<defaultAuthor>Default Author</defaultAuthor>
 	<files>
 	  <file>
 	    <type>rss</type>
 	    <path>english/rss1.xml</path>
 	    <pattern>${message}</pattern>
+	    <max>10</max>
 	  </file>
 	  <file>
 	    <type>html</type>
 	    <max>4</max>
 	    <path>english/index.html</path>
-	    <feedSectionStart><![CDATA[<!-- feedSection -->]]></feedSectionStart>
-	    <feedSectionEnd><![CDATA[<!-- /feedSection -->]]></feedSectionEnd>
-	    <feedDelimiter><![CDATA[<!-- feedDelimiter -->]]></feedDelimiter>
+	    <htmlFeedSectionStart><![CDATA[<!-- feedSection -->]]></htmlFeedSectionStart>
+	    <htmlFeedSectionEnd><![CDATA[<!-- /feedSection -->]]></htmlFeedSectionEnd>
+	    <htmlFeedDelimiter><![CDATA[<!-- feedDelimiter -->]]></htmlFeedDelimiter>
 	    <pattern><![CDATA[
 	      <p>
 	      ${patternIcon}
@@ -30,9 +32,9 @@
 	  <file>
 	    <type>html</type>
 	    <path>english/news/index.html</path>
-	    <feedSectionStart><![CDATA[<!-- feedSection -->]]></feedSectionStart>
-	    <feedSectionEnd><![CDATA[<!-- /feedSection -->]]></feedSectionEnd>
-	    <feedDelimiter><![CDATA[<!-- feedDelimiter -->]]></feedDelimiter>
+	    <htmlFeedSectionStart><![CDATA[<!-- feedSection -->]]></htmlFeedSectionStart>
+	    <htmlFeedSectionEnd><![CDATA[<!-- /feedSection -->]]></htmlFeedSectionEnd>
+	    <htmlFeedDelimiter><![CDATA[<!-- feedDelimiter -->]]></htmlFeedDelimiter>
 	    <pattern><![CDATA[
 	      <p>
 	      ${patternIcon}

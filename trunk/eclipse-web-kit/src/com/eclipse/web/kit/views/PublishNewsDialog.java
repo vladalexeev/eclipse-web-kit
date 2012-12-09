@@ -41,7 +41,7 @@ public class PublishNewsDialog extends Dialog {
 	
 	private Shell shell;
 	
-	private Label labelNewsProfile;
+	private Label labelNewsFeed;
 	private Combo comboNewsFeed;
 	
 	private Label labelFileName;
@@ -63,7 +63,13 @@ public class PublishNewsDialog extends Dialog {
 	private Composite bottomPanel;
 	private Button buttonPublish;
 	private Button buttonCancel;
-
+	
+	private boolean result=false;
+	private String resultNewsFeed;
+	private String resultAnchor;
+	private String resultTitle;
+	private String resultCategory;
+	private String resultText;
 	
 	public PublishNewsDialog(Shell parent, ProjectPropertyStore store, IFile file) {
 		super(parent);
@@ -88,8 +94,8 @@ public class PublishNewsDialog extends Dialog {
 		shell.setLayout(gridLayout);
 
 		//News feed profile
-		labelNewsProfile=new Label(shell, SWT.NONE);
-		labelNewsProfile.setText("News profile");
+		labelNewsFeed=new Label(shell, SWT.NONE);
+		labelNewsFeed.setText("News profile");
 		
 		GridData comboNewsProfileGD=new GridData(SWT.FILL,SWT.TOP, true, false);
 		comboNewsProfileGD.horizontalSpan=2;
@@ -175,9 +181,14 @@ public class PublishNewsDialog extends Dialog {
 		buttonPublish.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				result=true;
+				resultNewsFeed=comboNewsFeed.getText();
+				resultAnchor=comboAnchor.getText();
+				resultTitle=comboTitle.getText();
+				resultCategory=comboCategory.getText();
+				resultText=textText.getText();
 				shell.close();
 			}
-			
 		});
 		
 		buttonCancel=new Button(bottomPanel, SWT.PUSH);
@@ -387,5 +398,29 @@ public class PublishNewsDialog extends Dialog {
 			ErrorDialog.openError(shell, "Warning", "Error saving property store",  
 					new OperationStatus(IStatus.ERROR, "eclipse-web-kit", 0, "Error saving property store", e));
 		}
+	}
+	
+	public boolean hasResult() {
+		return result;
+	}
+
+	public String getResultNewsFeed() {
+		return resultNewsFeed;
+	}
+
+	public String getResultAnchor() {
+		return resultAnchor;
+	}
+
+	public String getResultTitle() {
+		return resultTitle;
+	}
+
+	public String getResultCategory() {
+		return resultCategory;
+	}
+
+	public String getResultText() {
+		return resultText;
 	}
 }
