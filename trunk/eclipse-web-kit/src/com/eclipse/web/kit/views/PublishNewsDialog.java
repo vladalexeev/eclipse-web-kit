@@ -2,11 +2,10 @@ package com.eclipse.web.kit.views;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
-import org.eclipse.core.commands.operations.OperationStatus;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -26,8 +25,10 @@ import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.eclipse.web.kit.newsfeed.NewsFeed;
 import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
+import com.eclipse.web.kit.util.DialogUtil;
 import com.eclipse.web.kit.util.html.Entities;
 import com.eclipse.web.kit.util.html.parser.HtmlParser;
 import com.eclipse.web.kit.util.html.parser.HtmlSimpleElement;
@@ -38,6 +39,7 @@ public class PublishNewsDialog extends Dialog {
 
 	private ProjectPropertyStore store;
 	private IFile file;
+	private List<NewsFeed> feeds;
 	
 	private Shell shell;
 	
@@ -71,10 +73,11 @@ public class PublishNewsDialog extends Dialog {
 	private String resultCategory;
 	private String resultText;
 	
-	public PublishNewsDialog(Shell parent, ProjectPropertyStore store, IFile file) {
+	public PublishNewsDialog(Shell parent, ProjectPropertyStore store, IFile file, List<NewsFeed> feeds) {
 		super(parent);
 		this.store=store;
 		this.file=file;
+		this.feeds=feeds;
 		createControls();
 		fillDialogFields();
 	}
@@ -285,18 +288,22 @@ public class PublishNewsDialog extends Dialog {
 		try {
 			labelFileNameValue.setText(file.getFullPath().toString());
 
-			String strNewsFeeds=store.getString(PreferenceConstants.P_NEWS_FEEDS_DESCRIPTIONS);
-			if (strNewsFeeds!=null) {
-				String[] newsFeeds=strNewsFeeds.split("\0");
-				for (String newsFeed:newsFeeds) {
-					comboNewsFeed.add(newsFeed);
-				}
+			for (int i=0; i<feeds.size(); i++) {
+				NewsFeed f=feeds.get(i);
+				comboNewsFeed.add(f.getFeedFileName());
 				
-				if (newsFeeds.length>0) {
-					comboNewsFeed.select(0);
+				if (f.getDefaultFolder()!=null) {
+					IFolder folder=file.getProject().getFolder(f.getDefaultFolder());
+					if (file.getLocation().toOSString().startsWith(folder.getLocation().toOSString())) {
+						comboNewsFeed.select(i);
+					}
 				}
 			}
 			
+			if (comboNewsFeed.getSelectionIndex()<0) {
+				comboNewsFeed.select(0);
+			}
+						
 			HtmlSimpleElement[] fileElements=htmlParser.parse(file);
 			
 			String description=getDescription(fileElements);
@@ -335,8 +342,7 @@ public class PublishNewsDialog extends Dialog {
 			}
 			
 		} catch (IOException e) {
-			ErrorDialog.openError(shell, "Error", "Error loading file",  
-					new OperationStatus(IStatus.ERROR, "eclipse-web-kit", 0, "Error loading file", e));
+			DialogUtil.showError("Error loading file", e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -395,8 +401,7 @@ public class PublishNewsDialog extends Dialog {
 		try {
 			store.save();
 		} catch (IOException e) {
-			ErrorDialog.openError(shell, "Warning", "Error saving property store",  
-					new OperationStatus(IStatus.ERROR, "eclipse-web-kit", 0, "Error saving property store", e));
+			DialogUtil.showError("Error saving property store", e);
 		}
 	}
 	

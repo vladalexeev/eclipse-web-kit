@@ -10,6 +10,7 @@ import org.w3c.dom.NodeList;
 import com.eclipse.web.kit.util.XmlUtil;
 
 public class NewsFeed {
+	private String feedFileName;
 	private String name;
 	private String defaultFolder;
 	private String defaultAuthor;
@@ -18,6 +19,14 @@ public class NewsFeed {
 	
 	public NewsFeed() {
 		
+	}
+
+	public String getFeedFileName() {
+		return feedFileName;
+	}
+
+	public void setFeedFileName(String feedFileName) {
+		this.feedFileName = feedFileName;
 	}
 
 	public String getName() {

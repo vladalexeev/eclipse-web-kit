@@ -21,11 +21,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 import com.eclipse.web.kit.Activator;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
+import com.eclipse.web.kit.util.DialogUtil;
 import com.eclipse.web.kit.util.FileUtil;
 import com.eclipse.web.kit.util.StringUtil;
 import com.eclipse.web.kit.util.SwtUtil;
@@ -168,10 +168,9 @@ public class GenerateSiteMap extends ProjectPopupAction {
 				Display.getDefault().asyncExec(new Runnable() {
 					@Override
 					public void run() {
-						MessageDialog.openInformation(
-								new Shell(),
+						DialogUtil.showMessage(
 								"Sitemap generate result",
-								"Sitemap generated with "+count+" URLs");						
+								"Sitemap generated with "+count+" URLs");
 					}
 				});				
 			} catch (Exception e) {

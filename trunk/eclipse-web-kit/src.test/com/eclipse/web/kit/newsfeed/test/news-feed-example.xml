@@ -25,7 +25,7 @@
 	      ]]>
 	    </pattern>
 	    <patternIcon><![CDATA[
-	      <a href="${link}"><img href="${icon}" border="0" width="${iconWidth}" height="${iconHeight}" align="left"/></a>
+	      <a href="${link}"><img src="${icon}" border="0" width="${iconWidth}" height="${iconHeight}" align="left"/></a>
 	    ]]>
 	    </patternIcon>
 	  </file>
@@ -44,7 +44,7 @@
 	      ]]>
 	    </pattern>
 	    <patternIcon><![CDATA[
-	      <a href="${link}"><img href="${icon}" border="0" width="${iconWidth}" height="${iconHeight}" align="left"/></a>
+	      <a href="${link}"><img src="${icon}" border="0" width="${iconWidth}" height="${iconHeight}" align="left"/></a>
 	    ]]>
 	    </patternIcon>
 	  </file>
