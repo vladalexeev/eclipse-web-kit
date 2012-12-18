@@ -179,7 +179,7 @@ public class PublishNewsDialog extends Dialog {
 		bottomPanel.setLayout(bottomLayout);
 		
 		buttonPublish=new Button(bottomPanel, SWT.PUSH);
-		buttonPublish.setEnabled(false);
+		//buttonPublish.setEnabled(false);
 		buttonPublish.setText("Publish");
 		buttonPublish.addSelectionListener(new SelectionAdapter() {
 			@Override
