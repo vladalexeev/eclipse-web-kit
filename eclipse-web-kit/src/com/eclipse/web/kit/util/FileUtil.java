@@ -74,7 +74,7 @@ public class FileUtil {
 	 * @return
 	 */
 	public static String createRelativePath(String baseFilePath, String targetFilePath) {
-		File targetFile=new File(targetFilePath);
+//		File targetFile=new File(targetFilePath);
 //		if (!targetFile.isAbsolute()) {
 //			return targetFilePath;
 //		}
