@@ -2,6 +2,17 @@
 	<feedName>Test feed</feedName>
 	<defaultFolder>rootFolder/subFolder</defaultFolder>
 	<defaultAuthor>Default Author</defaultAuthor>
+	<defaultCategories>
+	  <category>
+	    <path>english/anim</path>
+	    <name>Animation</name>
+	  </category>
+	  <category>
+	    <path>english/library</path>
+	    <name>Figures library</name>
+	  </category>
+	</defaultCategories>
+	
 	<files>
 	  <file>
 	    <type>rss</type>

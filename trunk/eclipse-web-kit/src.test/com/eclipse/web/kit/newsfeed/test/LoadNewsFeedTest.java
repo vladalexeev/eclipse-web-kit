@@ -1,12 +1,14 @@
 package com.eclipse.web.kit.newsfeed.test;
 
 import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.junit.Test;
 import org.w3c.dom.Document;
 
+import com.eclipse.web.kit.newsfeed.DefaultCategory;
 import com.eclipse.web.kit.newsfeed.FeedFile;
 import com.eclipse.web.kit.newsfeed.NewsFeed;
 
@@ -26,6 +28,17 @@ public class LoadNewsFeedTest {
 		assertEquals("rootFolder/subFolder", newsFeed.getDefaultFolder());
 		assertEquals("Default Author", newsFeed.getDefaultAuthor());
 		assertEquals(3, newsFeed.getFeedFiles().size());
+		
+		assertNotNull(newsFeed.getDefaultCategories());
+		List<DefaultCategory> defCategories=newsFeed.getDefaultCategories();
+		assertEquals(2, defCategories.size());
+		DefaultCategory c1=defCategories.get(0);
+		assertEquals("english/anim", c1.getPath());
+		assertEquals("Animation", c1.getCategoryName());
+		DefaultCategory c2=defCategories.get(1);
+		assertEquals("english/library", c2.getPath());
+		assertEquals("Figures library", c2.getCategoryName());
+
 		
 		FeedFile file1=newsFeed.getFeedFiles().get(0);
 		assertEquals(FeedFile.FeedFileType.RSS, file1.getType());
