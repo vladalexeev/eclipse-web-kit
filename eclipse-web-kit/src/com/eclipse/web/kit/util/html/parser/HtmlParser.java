@@ -27,6 +27,7 @@ public class HtmlParser {
 	private ArrayList<HtmlSimpleElement> currentTags=new ArrayList<HtmlSimpleElement>();
 	
 	private String currentTag=null;
+	private boolean currentTagAutoClose=false;
 	private HashMap<String,String> currentAttributes=null;
 	private String currentAttrName=null;
 	private String currentAttrValue=null;
@@ -117,6 +118,16 @@ public class HtmlParser {
 			state=ParserState.SEARCH_ATTR_EQUALS;
 		} else if (c=='=') {
 			state=ParserState.SEARCH_ATTR_VALUE_START;
+		} else if (c=='>') {
+			if (currentAttrName.equals("/")) {
+				currentTagAutoClose=true;
+			} else {
+				currentAttrValue="";
+				storeCurrentAttr();
+			}
+			
+			storeCurrentTag();
+			state=ParserState.SEARCH_TAG_START;
 		} else {
 			currentAttrName+=c;
 		}
@@ -180,6 +191,7 @@ public class HtmlParser {
 		if (currentTag!=null) {
 			HtmlSimpleTag tag=new HtmlSimpleTag();
 			tag.setTagName(currentTag.toLowerCase());
+			tag.setAutoClose(currentTagAutoClose);
 			if (currentAttributes==null) {
 				tag.setAttributes(new HashMap<String, String>());
 			} else {
@@ -192,6 +204,7 @@ public class HtmlParser {
 			currentAttributes=null;
 			currentAttrName=null;
 			currentAttrValue=null;
+			currentTagAutoClose=false;
 		}
 	}
 	

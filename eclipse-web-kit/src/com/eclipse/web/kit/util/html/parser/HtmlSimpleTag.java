@@ -4,6 +4,7 @@ import java.util.Map;
 
 public class HtmlSimpleTag implements HtmlSimpleElement {
 	private String tagName;
+	private boolean autoClose=false;
 	private Map<String,String> attributes;
 	
 	public HtmlSimpleTag() {
@@ -32,5 +33,13 @@ public class HtmlSimpleTag implements HtmlSimpleElement {
 		}
 		
 		return attributes.get(name);
+	}
+
+	public boolean isAutoClose() {
+		return autoClose;
+	}
+
+	public void setAutoClose(boolean autoClose) {
+		this.autoClose = autoClose;
 	}
 }

@@ -95,4 +95,26 @@ public class TestHtmlParser {
 		assertEquals(0, ((HtmlSimpleTag)elems[2]).getAttributes().size());
 	}
 	
+	@Test
+	public void testParserAutoCloseTag() {
+		String testHtml="<html><img src=\"aaa.jpg\" /></html>";
+		HtmlParser parser=new HtmlParser();
+		HtmlSimpleElement[] elems=parser.parse(testHtml);
+		
+		assertEquals(3, elems.length);
+		
+		assertTrue(elems[0] instanceof HtmlSimpleTag);
+		assertEquals("html", ((HtmlSimpleTag)elems[0]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[0]).getAttributes().size());
+
+		assertTrue(elems[1] instanceof HtmlSimpleTag);
+		assertTrue(((HtmlSimpleTag)elems[1]).isAutoClose());
+		assertEquals("img", ((HtmlSimpleTag)elems[1]).getTagName());
+		assertEquals("aaa.jpg", ((HtmlSimpleTag)elems[1]).getAttribute("src"));
+		
+		assertTrue(elems[2] instanceof HtmlSimpleTag);
+		assertEquals("/html", ((HtmlSimpleTag)elems[2]).getTagName());
+		assertEquals(0, ((HtmlSimpleTag)elems[2]).getAttributes().size());		
+	}
+	
 }
