@@ -23,6 +23,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -334,6 +335,8 @@ public class PublishNewsAction extends FilePopupAction {
 						publishHTML(feedFile);
 					}
 				}
+				
+				MessageDialog.openInformation(null, "News published", "News published\n"+publishFeed.getFeedFiles().size()+" files were changed.");
 			} catch (Throwable t) {
 				t.printStackTrace();
 				DialogUtil.showError(t);
