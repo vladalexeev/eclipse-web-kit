@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+import com.eclipse.web.kit.newsfeed.DefaultCategory;
 import com.eclipse.web.kit.newsfeed.NewsFeed;
 import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
@@ -303,6 +304,8 @@ public class PublishNewsDialog extends Dialog {
 			if (comboNewsFeed.getSelectionIndex()<0) {
 				comboNewsFeed.select(0);
 			}
+			
+			NewsFeed newsFeed=feeds.get(comboNewsFeed.getSelectionIndex());
 						
 			HtmlSimpleElement[] fileElements=htmlParser.parse(file);
 			
@@ -331,6 +334,13 @@ public class PublishNewsDialog extends Dialog {
 					comboCategory.add(c);
 				}
 			}
+			
+			for (DefaultCategory dc:newsFeed.getDefaultCategories()) {
+				String filePath=file.getProjectRelativePath().toPortableString();
+				if (filePath.startsWith(dc.getPath())) {
+					comboCategory.setText(dc.getCategoryName());
+				}
+			}			
 			
 			for (HtmlSimpleElement elem:fileElements) {
 				if (elem instanceof HtmlSimpleTag) {

@@ -15,6 +15,8 @@ public class NewsFeed {
 	private String defaultFolder;
 	private String defaultAuthor;
 	
+	private List<DefaultCategory> defaultCategories=new ArrayList<DefaultCategory>();
+	
 	private List<FeedFile> feedFiles=new ArrayList<FeedFile>();
 	
 	public NewsFeed() {
@@ -60,6 +62,10 @@ public class NewsFeed {
 	public void setFeedFiles(List<FeedFile> feedFiles) {
 		this.feedFiles = feedFiles;
 	}
+	
+	public List<DefaultCategory> getDefaultCategories() {
+		return defaultCategories;
+	}
 
 	public void load(Element root) {
 		Node sibling=root.getFirstChild();
@@ -75,6 +81,8 @@ public class NewsFeed {
 					defaultAuthor=XmlUtil.getElementText(elem);
 				} else if (name.equals("files")) {
 					loadFeedFiles(elem);
+				} else if (name.equals("defaultCategories")) {
+					loadDefaultCategories(elem);
 				}
 			}
 			
@@ -88,6 +96,18 @@ public class NewsFeed {
 			FeedFile feedFile=new FeedFile();
 			feedFile.load((Element) list.item(i));
 			feedFiles.add(feedFile);
+		}
+	}
+	
+	private void loadDefaultCategories(Element rootDefaultCategories) {
+		NodeList list=rootDefaultCategories.getElementsByTagName("category");
+		for (int i=0; i<list.getLength(); i++) {
+			Element e=(Element) list.item(i);
+			String path=XmlUtil.findElementValue(e, "path");
+			String name=XmlUtil.findElementValue(e, "name");
+			if (path!=null && name!=null) {
+				defaultCategories.add(new DefaultCategory(path, name));
+			}
 		}
 	}
 }
