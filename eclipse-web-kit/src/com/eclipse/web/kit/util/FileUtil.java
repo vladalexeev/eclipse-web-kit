@@ -75,9 +75,9 @@ public class FileUtil {
 	 */
 	public static String createRelativePath(String baseFilePath, String targetFilePath) {
 		File targetFile=new File(targetFilePath);
-		if (!targetFile.isAbsolute()) {
-			return targetFilePath;
-		}
+//		if (!targetFile.isAbsolute()) {
+//			return targetFilePath;
+//		}
 		
 		List<String> baseList=splitPathToTokens(baseFilePath);
 		List<String> targetList=splitPathToTokens(targetFilePath);

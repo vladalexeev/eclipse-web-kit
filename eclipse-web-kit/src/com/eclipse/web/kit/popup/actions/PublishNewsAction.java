@@ -36,8 +36,10 @@ import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
 import com.eclipse.web.kit.util.DialogUtil;
 import com.eclipse.web.kit.util.FileLoader;
+import com.eclipse.web.kit.util.FileUtil;
 import com.eclipse.web.kit.util.StringUtil;
 import com.eclipse.web.kit.util.SwtUtil;
+import com.eclipse.web.kit.util.html.Entities;
 import com.eclipse.web.kit.views.PublishNewsDialog;
 
 public class PublishNewsAction extends FilePopupAction {
@@ -175,13 +177,13 @@ public class PublishNewsAction extends FilePopupAction {
 	 */
 	private String createHtmlFeedItem(FeedFile feedFile) {
 		HashMap<String, String> params=new HashMap<String, String>();
-		params.put("title", publishTitle);
-		params.put("category", publishCategory);
-		params.put("message", publishText);
+		params.put("title", Entities.HTML40.escape(publishTitle));
+		params.put("category", Entities.HTML40.escape(publishCategory));
+		params.put("message", Entities.HTML40.escape(publishText));
 		
 		params.put("patternIcon", "");
 		
-		String link=file.getProjectRelativePath().toPortableString();
+		String link=FileUtil.createRelativePath(feedFile.getFilePath(),file.getProjectRelativePath().toPortableString());
 		
 		if (publishAnchor!=null && publishAnchor.length()>0) {
 			link+="#"+publishAnchor;
