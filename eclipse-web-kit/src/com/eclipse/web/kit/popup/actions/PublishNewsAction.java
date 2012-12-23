@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.UUID;
@@ -18,6 +20,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -31,6 +35,8 @@ import com.eclipse.web.kit.newsfeed.FeedFile.FeedFileType;
 import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
 import com.eclipse.web.kit.util.DialogUtil;
+import com.eclipse.web.kit.util.FileLoader;
+import com.eclipse.web.kit.util.StringUtil;
 import com.eclipse.web.kit.util.SwtUtil;
 import com.eclipse.web.kit.views.PublishNewsDialog;
 
@@ -154,6 +160,7 @@ public class PublishNewsAction extends FilePopupAction {
 			Transformer t=TransformerFactory.newInstance().newTransformer();
 			t.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			t.transform(new DOMSource(doc), new StreamResult(rssFile.getLocation().toFile()));
+			rssFile.refreshLocal(IResource.DEPTH_ZERO, null);
 			
 		} catch (Throwable t) {
 			throw new RuntimeException("Error loading file "+rssFile.getLocation().toFile(),t);
@@ -161,8 +168,101 @@ public class PublishNewsAction extends FilePopupAction {
 		
 	}
 	
-	private void publishHTML(FeedFile feedFile) {
+	/**
+	 * Create feed item for HTML feed format
+	 * @param feedFile
+	 * @return
+	 */
+	private String createHtmlFeedItem(FeedFile feedFile) {
+		HashMap<String, String> params=new HashMap<String, String>();
+		params.put("title", publishTitle);
+		params.put("category", publishCategory);
+		params.put("message", publishText);
 		
+		params.put("patternIcon", "");
+		
+		String link=file.getProjectRelativePath().toPortableString();
+		
+		if (publishAnchor!=null && publishAnchor.length()>0) {
+			link+="#"+publishAnchor;
+		}
+		params.put("link", link);
+		
+		SimpleDateFormat sdf=new SimpleDateFormat("dd.MM.yyyy");
+		params.put("date", sdf.format(new Date()));
+		
+		String result=StringUtil.stringReplaceMap(feedFile.getPattern(), params);
+		return result;
+	}
+	
+	private void publishHTML(FeedFile feedFile) {
+		if (feedFile.getHtmlFeedSectionStart()==null || feedFile.getHtmlFeedSectionStart().length()==0) {
+			throw new RuntimeException("No 'htmlFeedSectionStart' defined in feed XML-file "+publishFeed.getFeedFileName());
+		}
+		
+		if (feedFile.getHtmlFeedSectionEnd()==null || feedFile.getHtmlFeedSectionEnd().length()==0) {
+			throw new RuntimeException("No 'htmlFeedSectionEnd' defined in feed XML-file "+publishFeed.getFeedFileName());
+		}
+		
+		if (feedFile.getHtmlFeedDelimiter()==null || feedFile.getHtmlFeedDelimiter().length()==0) {
+			throw new RuntimeException("No 'htmlFeedDelimiter' defined in feed XML-file "+publishFeed.getFeedFileName());
+		}
+		
+		IFile feedFileHtml=file.getProject().getFile(feedFile.getFilePath());
+		
+		String fileCharset;
+		try {
+			fileCharset=feedFileHtml.getCharset();
+		} catch (Exception e) {
+			throw new RuntimeException("Error getting charset of file "+file, e);
+		}
+		
+		String fileContent;
+		try {
+			fileContent=FileLoader.loadFile(feedFileHtml.getLocation().toOSString(), fileCharset);
+		} catch (Throwable t) {
+			throw new RuntimeException("Error reading file "+file, t);
+		}
+		
+		int startFeedIndex=fileContent.indexOf(feedFile.getHtmlFeedSectionStart());
+		if (startFeedIndex<0) {
+			throw new RuntimeException("Feed start '"+feedFile.getHtmlFeedSectionStart()+"' not found in file "+feedFile.getFilePath());
+		}
+		
+		int endFeedIndex=fileContent.indexOf(feedFile.getHtmlFeedSectionEnd());
+		if (endFeedIndex<0) {
+			throw new RuntimeException("Feed end '"+feedFile.getHtmlFeedSectionStart()+"' not found in file "+feedFile.getFilePath());
+		}
+		
+		String fileStart=fileContent.substring(0,startFeedIndex);
+		String fileEnd=fileContent.substring(endFeedIndex+feedFile.getHtmlFeedSectionEnd().length());
+		String feedContent=fileContent.substring(startFeedIndex+feedFile.getHtmlFeedSectionStart().length(), endFeedIndex);
+		List<String> feedItems=StringUtil.splitString(feedContent, feedFile.getHtmlFeedDelimiter());
+		feedItems.add(0,createHtmlFeedItem(feedFile));
+		
+		if (feedFile.getMaxNews()>0) {
+			while (feedItems.size()>feedFile.getMaxNews()) {
+				feedItems.remove(feedItems.size()-1);
+			}
+		}
+		
+		String newFileContent=fileStart+feedFile.getHtmlFeedSectionStart();
+		for (int i=0; i<feedItems.size(); i++) {
+			if (i>0) {
+				newFileContent+=feedFile.getHtmlFeedDelimiter();
+			}
+			newFileContent+=feedItems.get(i);
+		}
+		newFileContent+=feedFile.getHtmlFeedSectionEnd()+fileEnd;
+		
+		try {
+			FileLoader.saveFile(feedFileHtml.getLocation().toOSString(), newFileContent, fileCharset);
+			feedFileHtml.refreshLocal(IResource.DEPTH_ZERO, null);
+		} catch (IOException e) {
+			throw new RuntimeException("Error saving file "+feedFile.getFilePath(), e);
+		} catch (CoreException e) {
+			throw new RuntimeException("Error updating file "+feedFile.getFilePath(), e);
+		}
 	}
 	
 	private NewsFeed loadNewsFeed(String fileName) throws SAXException, IOException, ParserConfigurationException {
@@ -224,12 +324,17 @@ public class PublishNewsAction extends FilePopupAction {
 			publishCategory=dialog.getResultCategory();
 			publishText=dialog.getResultText();
 			
-			for (FeedFile feedFile:publishFeed.getFeedFiles()) {
-				if (feedFile.getType()==FeedFileType.RSS) {
-					publishRSS(feedFile);
-				} else if (feedFile.getType()==FeedFileType.HTML) {
-					publishHTML(feedFile);
+			try {
+				for (FeedFile feedFile:publishFeed.getFeedFiles()) {
+					if (feedFile.getType()==FeedFileType.RSS) {
+						publishRSS(feedFile);
+					} else if (feedFile.getType()==FeedFileType.HTML) {
+						publishHTML(feedFile);
+					}
 				}
+			} catch (Throwable t) {
+				t.printStackTrace();
+				DialogUtil.showError(t);
 			}
 		}
 	}
