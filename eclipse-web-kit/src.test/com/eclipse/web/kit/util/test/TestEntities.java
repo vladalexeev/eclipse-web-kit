@@ -16,7 +16,7 @@ public class TestEntities {
 	
 	@Test
 	public void testEscape() {
-		String str=Entities.HTML40.escape("Johnson & Johnson");
+		String str=Entities.HTML40.escape("Johnson & Johnson",true);
 		assertEquals("Johnson &amp; Johnson", str);
 	}
 }

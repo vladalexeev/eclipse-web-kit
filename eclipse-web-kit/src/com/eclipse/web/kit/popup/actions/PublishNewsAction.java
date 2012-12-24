@@ -178,9 +178,9 @@ public class PublishNewsAction extends FilePopupAction {
 	 */
 	private String createHtmlFeedItem(FeedFile feedFile) {
 		HashMap<String, String> params=new HashMap<String, String>();
-		params.put("title", Entities.HTML40.escape(publishTitle));
-		params.put("category", Entities.HTML40.escape(publishCategory));
-		params.put("message", Entities.HTML40.escape(publishText));
+		params.put("title", Entities.HTML40.escape(publishTitle,true));
+		params.put("category", Entities.HTML40.escape(publishCategory,true));
+		params.put("message", Entities.HTML40.escape(publishText,true));
 		
 		params.put("patternIcon", "");
 		
