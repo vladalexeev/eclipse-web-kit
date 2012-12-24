@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -104,7 +103,7 @@ public class PublishNewsAction extends FilePopupAction {
 		}
 		
 		Element elemGuid=doc.createElement("guid");
-		elemGuid.appendChild(doc.createTextNode(UUID.randomUUID().toString()));
+		elemGuid.appendChild(doc.createTextNode(link));
 		elemItem.appendChild(elemGuid);
 		
 		SimpleDateFormat dateFormat=new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss z",Locale.US);
