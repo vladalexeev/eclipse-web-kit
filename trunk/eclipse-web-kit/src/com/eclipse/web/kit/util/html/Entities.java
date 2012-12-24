@@ -810,7 +810,7 @@ public class Entities {
     public String escape(String str) {
         StringWriter stringWriter = createStringWriter(str);
         try {
-            this.escape(stringWriter, str);
+            this.escape(stringWriter, str, false);
         } catch (IOException e) {
             // This should never happen because ALL the StringWriter methods called by #escape(Writer, String) do not
             // throw IOExceptions.
@@ -818,6 +818,19 @@ public class Entities {
         }
         return stringWriter.toString();
     }
+    
+    public String escape(String str, boolean replaceEntitiesOnly) {
+        StringWriter stringWriter = createStringWriter(str);
+        try {
+            this.escape(stringWriter, str, replaceEntitiesOnly);
+        } catch (IOException e) {
+            // This should never happen because ALL the StringWriter methods called by #escape(Writer, String) do not
+            // throw IOExceptions.
+            throw new RuntimeException(e);
+        }
+        return stringWriter.toString();
+    }
+    
 
     /**
      * <p>
@@ -836,13 +849,13 @@ public class Entities {
      * @see #escape(String)
      * @see Writer
      */
-    public void escape(Writer writer, String str) throws IOException {
+    public void escape(Writer writer, String str, boolean replaceEntitiesOnly) throws IOException {
         int len = str.length();
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
             String entityName = this.entityName(c);
             if (entityName == null) {
-                if (c > 0x7F) {
+                if (c > 0x7F && !replaceEntitiesOnly) {
                     writer.write("&#");
                     writer.write(Integer.toString(c, 10));
                     writer.write(';');
