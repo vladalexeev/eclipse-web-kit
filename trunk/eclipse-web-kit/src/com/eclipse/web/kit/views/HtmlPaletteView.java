@@ -237,7 +237,8 @@ public class HtmlPaletteView extends ViewPart {
 			String resultText=dialog.getResultText();
 			String resultHyperlink=dialog.getResultHyperlink();
 			
-			if (!resultHyperlink.startsWith("http://")) {
+			if (!resultHyperlink.startsWith("http://") && !resultHyperlink.startsWith("https://") &&
+				!resultHyperlink.startsWith("mailto:") && !resultHyperlink.startsWith("javascript:")) {
 				String documentFileName=SwtUtil.getActiveEditorFileName();
 				resultHyperlink=FileUtil.createRelativePath(documentFileName, resultHyperlink);
 			}
