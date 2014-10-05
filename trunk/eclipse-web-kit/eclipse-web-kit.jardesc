@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="WINDOWS-1251" standalone="no"?>
 <jardesc>
-    <jar path="D:/Vlad-work/eclipse/eclipse-web-kit-1.2.1.jar"/>
+    <jar path="D:/Vlad-work/eclipse/eclipse-web-kit-1.3.0.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/eclipse-web-kit/eclipse-web-kit.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
