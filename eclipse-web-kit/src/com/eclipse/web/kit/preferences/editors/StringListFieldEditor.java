@@ -146,7 +146,7 @@ public class StringListFieldEditor extends FieldEditor {
 		main.setLayoutData(mainData);
 		
 
-		this.list = new List(main, SWT.BORDER);
+		this.list = new List(main, SWT.BORDER | SWT.V_SCROLL);
 
 		// Create a grid data that takes up the extra space in the dialog and spans both columns.
 		GridData listData = new GridData(GridData.FILL_HORIZONTAL);
