@@ -53,6 +53,8 @@ public class PreferenceConstants {
 	public static final String P_NEWS_FEEDS_DESCRIPTIONS=PAGE_ID_NEWS_FEEDS+".descriptions";
 	public static final String P_NEWS_FEEDS_RECENT_TITLES=PAGE_ID_NEWS_FEEDS+".recentTitles";
 	public static final String P_NEWS_FEEDS_RECENT_CATEGORIES=PAGE_ID_NEWS_FEEDS+".recentCategories";
+	public static final String P_NEWS_FEEDS_TITLE_PATTERNS=PAGE_ID_NEWS_FEEDS+".titlePatterns";
+	public static final String P_NEWS_FEEDS_DESCRIPTION_PATTERNS=PAGE_ID_NEWS_FEEDS+".descriptionPatterns";
 	
 	
 	
