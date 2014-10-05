@@ -30,6 +30,7 @@ import com.eclipse.web.kit.newsfeed.NewsFeed;
 import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
 import com.eclipse.web.kit.util.DialogUtil;
+import com.eclipse.web.kit.util.FileLoader;
 import com.eclipse.web.kit.util.html.Entities;
 import com.eclipse.web.kit.util.html.parser.HtmlParser;
 import com.eclipse.web.kit.util.html.parser.HtmlSimpleElement;
@@ -248,7 +249,51 @@ public class PublishNewsDialog extends Dialog {
 		}
 	}
 	
-	private String getDescription(HtmlSimpleElement[] elems) {
+	private String extractValueByPatters(String fileContent, String[] patterns) {
+		for (String pattern:patterns) {
+			pattern=pattern.trim();
+			int pIndex=pattern.indexOf("{{}}");
+			if (pIndex<=0) {
+				continue;
+			}
+			
+			String patternBegin=pattern.substring(0, pIndex);
+			String patternEnd=pattern.substring(pIndex+4);
+			if (patternEnd.length()==0) {
+				continue;
+			}
+
+			int indexBegin=fileContent.indexOf(patternBegin);
+			if (indexBegin<0) {
+				continue;
+			}
+			
+			int indexEnd=fileContent.indexOf(patternEnd, indexBegin+patternBegin.length()-1);
+			if (indexEnd<0) {
+				continue;
+			}
+			
+			String value=fileContent.substring(indexBegin+patternBegin.length(), indexEnd);
+			if (value.length()>0) {
+				return value;
+			}
+		}
+		
+		return null;
+	}
+	
+	private String getDescription(HtmlSimpleElement[] elems, String fileContent) {
+		String str=store.getString(PreferenceConstants.P_NEWS_FEEDS_DESCRIPTION_PATTERNS);
+		String[] descriptionPatters=new String[]{};
+		if (str!=null) {
+			descriptionPatters=str.split("\0");
+		}
+		
+		String patternValue=extractValueByPatters(fileContent, descriptionPatters);
+		if (patternValue!=null) {
+			return patternValue;
+		}
+		
 		for (HtmlSimpleElement e:elems) {
 			if (e instanceof HtmlSimpleTag) {
 				HtmlSimpleTag tag=(HtmlSimpleTag) e;
@@ -263,7 +308,18 @@ public class PublishNewsDialog extends Dialog {
 		return null;
 	}
 	
-	private String getTitle(HtmlSimpleElement[] elems) {
+	private String getTitle(HtmlSimpleElement[] elems, String fileContent) {
+		String str=store.getString(PreferenceConstants.P_NEWS_FEEDS_TITLE_PATTERNS);
+		String[] titlePatters=new String[]{};
+		if (str!=null) {
+			titlePatters=str.split("\0");
+		}
+		
+		String patternValue=extractValueByPatters(fileContent, titlePatters);
+		if (patternValue!=null) {
+			return patternValue;
+		}		
+		
 		String result=null;
 		for (HtmlSimpleElement e:elems) {
 			if (e instanceof HtmlSimpleTag) {
@@ -306,15 +362,17 @@ public class PublishNewsDialog extends Dialog {
 			}
 			
 			NewsFeed newsFeed=feeds.get(comboNewsFeed.getSelectionIndex());
-						
-			HtmlSimpleElement[] fileElements=htmlParser.parse(file);
 			
-			String description=getDescription(fileElements);
+			String fileContent=FileLoader.loadFile(file.getLocation().toOSString());
+						
+			HtmlSimpleElement[] fileElements=htmlParser.parse(fileContent);
+			
+			String description=getDescription(fileElements, fileContent);
 			if (description!=null) {
 				textText.setText(Entities.HTML40.unescape(description));
 			}
 			
-			String title=getTitle(fileElements);
+			String title=getTitle(fileElements, fileContent);
 			if (title!=null) {
 				comboTitle.setText(Entities.HTML40.unescape(title));
 			}
