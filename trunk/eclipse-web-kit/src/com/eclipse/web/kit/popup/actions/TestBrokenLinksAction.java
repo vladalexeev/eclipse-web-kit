@@ -90,7 +90,7 @@ public class TestBrokenLinksAction extends ProjectPopupAction {
 							for (LinkInfo link:fileLinks) {
 								if (link.getLinkFile()==null || link.getLinkFile().startsWith("http://") ||
 									link.getLinkFile().startsWith("https://") || link.getLinkFile().startsWith("mailto:") ||
-									link.getLinkFile().startsWith("javascript:")) {
+									link.getLinkFile().startsWith("javascript:") || link.getLinkFile().startsWith("//")) {
 									continue;
 								}
 								
