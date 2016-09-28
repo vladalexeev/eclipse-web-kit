@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="WINDOWS-1251" standalone="no"?>
 <jardesc>
-    <jar path="D:/Vlad-work/eclipse/eclipse-web-kit-1.3.0.jar"/>
+    <jar path="D:/VladWork/workspaces/eclipse-web-kit-1.3.0.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/eclipse-web-kit/eclipse-web-kit.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="false" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -11,13 +11,13 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <file path="/eclipse-web-kit/.classpath"/>
-        <folder path="/eclipse-web-kit/icons"/>
-        <file path="/eclipse-web-kit/.project"/>
-        <folder path="/eclipse-web-kit/META-INF"/>
         <javaElement handleIdentifier="=eclipse-web-kit/src"/>
-        <file path="/eclipse-web-kit/contexts.xml"/>
+        <file path="/eclipse-web-kit/.classpath"/>
+        <folder path="/eclipse-web-kit/META-INF"/>
         <file path="/eclipse-web-kit/build.properties"/>
+        <folder path="/eclipse-web-kit/icons"/>
         <file path="/eclipse-web-kit/plugin.xml"/>
+        <file path="/eclipse-web-kit/.project"/>
+        <file path="/eclipse-web-kit/contexts.xml"/>
     </selectedElements>
 </jardesc>

@@ -4,11 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="src.test"/>
-	<classpathentry kind="lib" path="D:/eclipse-3.7/plugins/org.eclipse.ui.ide_3.7.0.I20110519-0100.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse-3.7/plugins/org.eclipse.ui.workbench.texteditor_3.7.0.v20110505-0800.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse-3.7/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse-3.7/plugins/org.eclipse.jface.text_3.7.0.v20110505-0800.jar"/>
-	<classpathentry kind="lib" path="D:/eclipse-3.7/plugins/org.eclipse.text_3.5.100.v20110505-0800.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
