@@ -162,6 +162,14 @@ public class FileUtil {
 		return result;
 	}
 	
+	public static String createSiteAbsolutePath(String siteLocalPath, String basePath, String relativePath) {
+		if (relativePath.startsWith("/")) {
+			return relativePath;
+		}
+		String absolutePath=createAbsolutePath(basePath, relativePath);
+		return "/"+createRelativePath2(siteLocalPath, absolutePath);
+	}
+	
 	public static String getFileExt(String filePath) {
 		File f=new File(filePath);
 		String fileName=f.getName();

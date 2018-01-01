@@ -49,6 +49,7 @@ public class PublishNewsAction extends FilePopupAction {
 	private String publishTitle;
 	private String publishCategory;
 	private String publishText;
+	private String publishImage;
 	
 	private String siteAddress;
 	
@@ -180,8 +181,7 @@ public class PublishNewsAction extends FilePopupAction {
 		params.put("title", Entities.HTML40.escape(publishTitle,true));
 		params.put("category", Entities.HTML40.escape(publishCategory,true));
 		params.put("message", Entities.HTML40.escape(publishText,true));
-		
-		params.put("patternIcon", "");
+		params.put("image", Entities.HTML40.escape(publishImage, true));
 		
 		String link=FileUtil.createRelativePath(feedFile.getFilePath(),file.getProjectRelativePath().toPortableString());
 		
@@ -325,6 +325,7 @@ public class PublishNewsAction extends FilePopupAction {
 			publishTitle=dialog.getResultTitle();
 			publishCategory=dialog.getResultCategory();
 			publishText=dialog.getResultText();
+			publishImage=dialog.getResultImage();
 			
 			try {
 				for (FeedFile feedFile:publishFeed.getFeedFiles()) {

@@ -29,16 +29,11 @@
 	    <htmlFeedDelimiter><![CDATA[<!-- feedDelimiter -->]]></htmlFeedDelimiter>
 	    <pattern><![CDATA[
 	      <p>
-	      ${patternIcon}
 	      ${date} <a href="${link}">${message}</a>
 	      </p>
 	      <div style="clear:both;"></div>
 	      ]]>
 	    </pattern>
-	    <patternIcon><![CDATA[
-	      <a href="${link}"><img src="${icon}" border="0" width="${iconWidth}" height="${iconHeight}" align="left"/></a>
-	    ]]>
-	    </patternIcon>
 	  </file>
 	  <file>
 	    <type>html</type>
@@ -48,16 +43,11 @@
 	    <htmlFeedDelimiter><![CDATA[<!-- feedDelimiter -->]]></htmlFeedDelimiter>
 	    <pattern><![CDATA[
 	      <p>
-	      ${patternIcon}
 	      ${date} <a href="${link}">${message}</a>
 	      </p>
 	      <div style="clear:both;"></div>
 	      ]]>
 	    </pattern>
-	    <patternIcon><![CDATA[
-	      <a href="${link}"><img src="${icon}" border="0" width="${iconWidth}" height="${iconHeight}" align="left"/></a>
-	    ]]>
-	    </patternIcon>
 	  </file>
 	</files>
 </xml>

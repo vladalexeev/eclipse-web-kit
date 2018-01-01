@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -31,6 +32,8 @@ import com.eclipse.web.kit.overlay.ProjectPropertyStore;
 import com.eclipse.web.kit.preferences.PreferenceConstants;
 import com.eclipse.web.kit.util.DialogUtil;
 import com.eclipse.web.kit.util.FileLoader;
+import com.eclipse.web.kit.util.FileUtil;
+import com.eclipse.web.kit.util.SwtUtil;
 import com.eclipse.web.kit.util.html.Entities;
 import com.eclipse.web.kit.util.html.parser.HtmlParser;
 import com.eclipse.web.kit.util.html.parser.HtmlSimpleElement;
@@ -56,6 +59,9 @@ public class PublishNewsDialog extends Dialog {
 	
 	private Label labelTitle;
 	private Combo comboTitle;
+	
+	private Label labelImage;
+	private Combo comboImage;
 
 	private Label labelCategory;
 	private Combo comboCategory;
@@ -74,6 +80,7 @@ public class PublishNewsDialog extends Dialog {
 	private String resultTitle;
 	private String resultCategory;
 	private String resultText;
+	private String resultImage;
 	
 	public PublishNewsDialog(Shell parent, ProjectPropertyStore store, IFile file, List<NewsFeed> feeds) {
 		super(parent);
@@ -139,6 +146,16 @@ public class PublishNewsDialog extends Dialog {
 		comboTitleGD.horizontalAlignment=GridData.FILL;
 		comboTitle=new Combo(shell, SWT.SINGLE| SWT.BORDER);
 		comboTitle.setLayoutData(comboTitleGD);
+		
+		//Image
+		labelImage=new Label(shell, SWT.NONE);
+		labelImage.setText("Image");
+		
+		GridData comboImageGD=new GridData();
+		comboImageGD.horizontalSpan=2;
+		comboImageGD.horizontalAlignment=GridData.FILL;
+		comboImage=new Combo(shell, SWT.SINGLE| SWT.BORDER);
+		comboImage.setLayoutData(comboImageGD);
 
 		//Category
 		labelCategory=new Label(shell, SWT.NONE);
@@ -192,6 +209,7 @@ public class PublishNewsDialog extends Dialog {
 				resultTitle=comboTitle.getText();
 				resultCategory=comboCategory.getText();
 				resultText=textText.getText();
+				resultImage=comboImage.getText();
 				shell.close();
 			}
 		});
@@ -340,6 +358,43 @@ public class PublishNewsDialog extends Dialog {
 		return result;
 	}
 	
+	private String[] getImages(HtmlSimpleElement[] elems, String fileContent) {
+		ArrayList<String> imageFiles=new ArrayList<String>();
+		
+		String str=store.getString(PreferenceConstants.P_NEWS_FEEDS_IMAGE_PATTERNS);
+		String[] imagePatterns=new String[]{};
+		if (str!=null) {
+			imagePatterns=str.split("\0");
+		}
+		
+		String patternValue=extractValueByPatters(fileContent, imagePatterns);
+		if (patternValue!=null) {
+			imageFiles.add(patternValue);
+		}
+		
+		for (HtmlSimpleElement e:elems) {
+			if (e instanceof HtmlSimpleTag) {
+				HtmlSimpleTag tag=(HtmlSimpleTag) e;
+				if (tag.getTagName().equalsIgnoreCase("img")) {
+					String srcAttr=tag.getAttribute("src");
+					if (srcAttr!=null) {
+						imageFiles.add(srcAttr);
+					}
+				} 
+			} 
+		}
+		
+		ArrayList<String> result=new ArrayList<String>();
+		IProject project=SwtUtil.getActiveProject();
+		String projectPath=project.getLocation().toString();
+		for (String imageFile:imageFiles) {
+			result.add(FileUtil.createSiteAbsolutePath(projectPath, file.getParent().getLocation().toString(), imageFile));
+		}
+		
+		
+		return result.toArray(new String[result.size()]);
+	}
+	
 	private void fillDialogFields() {
 		HtmlParser htmlParser=new HtmlParser();
 		try {
@@ -382,6 +437,15 @@ public class PublishNewsDialog extends Dialog {
 				String[] recentTitles=strRecentTitles.split("\0");
 				for (String t:recentTitles) {
 					comboTitle.add(t);
+				}
+			}
+			
+			String[] imageFiles=getImages(fileElements, fileContent);
+			if (imageFiles!=null && imageFiles.length>0) {
+				comboImage.setText(Entities.HTML40.unescape(imageFiles[0]));
+				
+				for (String imageFile:imageFiles) {
+					comboImage.add(imageFile);
 				}
 			}
 			
@@ -495,5 +559,9 @@ public class PublishNewsDialog extends Dialog {
 
 	public String getResultText() {
 		return resultText;
+	}
+	
+	public String getResultImage() {
+		return resultImage;
 	}
 }

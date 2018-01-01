@@ -23,4 +23,9 @@ public class TestFileUtil {
 		assertEquals("C:/aaa/ccc/test.html", FileUtil.createAbsolutePath("C:/aaa/bbb", "../ccc/test.html"));
 		assertEquals("C:/ddd/eee/test.html", FileUtil.createAbsolutePath("C:/aaa/bbb", "../../ddd/eee/test.html"));
 	}
+	
+	@Test
+	public void testCreateSiteAbsolutePath() {
+		assertEquals("/images/author/image.jpg", FileUtil.createSiteAbsolutePath("C:/site", "pages/author", "../../images/author/image.jpg"));
+	}
 }

@@ -39,6 +39,7 @@ public class NewsFeedsPreferences extends FieldEditorPropertyPage {
 		
 		
 		addField(new StringListFieldEditor(PreferenceConstants.P_NEWS_FEEDS_TITLE_PATTERNS, "News title patterns", getFieldEditorParent()));
+		addField(new StringListFieldEditor(PreferenceConstants.P_NEWS_FEEDS_IMAGE_PATTERNS, "News image patterns", getFieldEditorParent()));
 		addField(new StringListFieldEditor(PreferenceConstants.P_NEWS_FEEDS_DESCRIPTION_PATTERNS, "News text patterns", getFieldEditorParent()));
 	}
 

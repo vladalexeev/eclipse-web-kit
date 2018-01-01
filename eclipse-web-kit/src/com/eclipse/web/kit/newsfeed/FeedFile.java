@@ -15,7 +15,6 @@ public class FeedFile {
 	private String filePath;
 	private int maxNews=-1;
 	private String pattern;
-	private String patternIcon;
 	
 	private String htmlFeedSectionStart;
 	private String htmlFeedSectionEnd;
@@ -55,14 +54,6 @@ public class FeedFile {
 
 	public void setPattern(String pattern) {
 		this.pattern = pattern;
-	}
-
-	public String getPatternIcon() {
-		return patternIcon;
-	}
-
-	public void setPatternIcon(String patternIcon) {
-		this.patternIcon = patternIcon;
 	}
 
 	public String getHtmlFeedSectionStart() {
@@ -113,8 +104,6 @@ public class FeedFile {
 					maxNews=XmlUtil.getElementNumeric(elem, -1);
 				} else if (name.equals("pattern")) {
 					pattern=XmlUtil.getElementText(elem);
-				} else if (name.equals("patternIcon")) {
-					patternIcon=XmlUtil.getElementText(elem);
 				} else if (name.equals("htmlFeedSectionStart")) {
 					htmlFeedSectionStart=XmlUtil.getElementText(elem);
 				} else if (name.equals("htmlFeedSectionEnd")) {

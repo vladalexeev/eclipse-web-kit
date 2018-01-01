@@ -53,7 +53,6 @@ public class LoadNewsFeedTest {
 		assertEquals("<!-- /feedSection -->", file2.getHtmlFeedSectionEnd());
 		assertEquals("<!-- feedDelimiter -->", file2.getHtmlFeedDelimiter());
 		assertNotNull(file2.getPattern());
-		assertNotNull(file2.getPatternIcon());
 		assertEquals(4, file2.getMaxNews());
 
 		FeedFile file3=newsFeed.getFeedFiles().get(2);
@@ -63,7 +62,6 @@ public class LoadNewsFeedTest {
 		assertEquals("<!-- /feedSection -->", file3.getHtmlFeedSectionEnd());
 		assertEquals("<!-- feedDelimiter -->", file3.getHtmlFeedDelimiter());
 		assertNotNull(file3.getPattern());
-		assertNotNull(file3.getPatternIcon());
 		assertEquals(-1, file3.getMaxNews());		
 	}
 }

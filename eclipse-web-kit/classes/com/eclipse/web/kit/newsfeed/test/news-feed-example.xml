@@ -1,0 +1,53 @@
+<xml>
+	<feedName>Test feed</feedName>
+	<defaultFolder>rootFolder/subFolder</defaultFolder>
+	<defaultAuthor>Default Author</defaultAuthor>
+	<defaultCategories>
+	  <category>
+	    <path>english/anim</path>
+	    <name>Animation</name>
+	  </category>
+	  <category>
+	    <path>english/library</path>
+	    <name>Figures library</name>
+	  </category>
+	</defaultCategories>
+	
+	<files>
+	  <file>
+	    <type>rss</type>
+	    <path>english/rss1.xml</path>
+	    <pattern>${message}</pattern>
+	    <max>10</max>
+	  </file>
+	  <file>
+	    <type>html</type>
+	    <max>4</max>
+	    <path>english/index.html</path>
+	    <htmlFeedSectionStart><![CDATA[<!-- feedSection -->]]></htmlFeedSectionStart>
+	    <htmlFeedSectionEnd><![CDATA[<!-- /feedSection -->]]></htmlFeedSectionEnd>
+	    <htmlFeedDelimiter><![CDATA[<!-- feedDelimiter -->]]></htmlFeedDelimiter>
+	    <pattern><![CDATA[
+	      <p>
+	      ${date} <a href="${link}">${message}</a>
+	      </p>
+	      <div style="clear:both;"></div>
+	      ]]>
+	    </pattern>
+	  </file>
+	  <file>
+	    <type>html</type>
+	    <path>english/news/index.html</path>
+	    <htmlFeedSectionStart><![CDATA[<!-- feedSection -->]]></htmlFeedSectionStart>
+	    <htmlFeedSectionEnd><![CDATA[<!-- /feedSection -->]]></htmlFeedSectionEnd>
+	    <htmlFeedDelimiter><![CDATA[<!-- feedDelimiter -->]]></htmlFeedDelimiter>
+	    <pattern><![CDATA[
+	      <p>
+	      ${date} <a href="${link}">${message}</a>
+	      </p>
+	      <div style="clear:both;"></div>
+	      ]]>
+	    </pattern>
+	  </file>
+	</files>
+</xml>
