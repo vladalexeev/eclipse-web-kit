@@ -161,6 +161,7 @@ public class PublishNewsAction extends FilePopupAction {
 		
 		try {
 			Transformer t=TransformerFactory.newInstance().newTransformer();
+			t.setOutputProperty(OutputKeys.INDENT, "yes");
 			t.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			t.transform(new DOMSource(doc), new StreamResult(rssFile.getLocation().toFile()));
 			rssFile.refreshLocal(IResource.DEPTH_ZERO, null);
