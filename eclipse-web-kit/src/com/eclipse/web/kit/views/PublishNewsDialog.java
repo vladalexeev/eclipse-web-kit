@@ -424,12 +424,12 @@ public class PublishNewsDialog extends Dialog {
 			
 			String description=getDescription(fileElements, fileContent);
 			if (description!=null) {
-				textText.setText(Entities.HTML40.unescape(description));
+				textText.setText(Entities.HTML40.unescape(Entities.HTML40.unescape(description)));
 			}
 			
 			String title=getTitle(fileElements, fileContent);
 			if (title!=null) {
-				comboTitle.setText(Entities.HTML40.unescape(title));
+				comboTitle.setText(Entities.HTML40.unescape(Entities.HTML40.unescape(title)));
 			}
 			
 			String strRecentTitles=store.getString(PreferenceConstants.P_NEWS_FEEDS_RECENT_TITLES);
