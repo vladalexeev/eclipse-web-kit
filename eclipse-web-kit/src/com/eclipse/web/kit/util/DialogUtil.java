@@ -61,7 +61,7 @@ public class DialogUtil {
 	
 	public static void showMessage(String title, String message) {
 		MessageDialog.openInformation(
-				null,
+				SwtUtil.getActiveWorkbenchWindow().getShell(),
 				title,
 				message);	
 	}
