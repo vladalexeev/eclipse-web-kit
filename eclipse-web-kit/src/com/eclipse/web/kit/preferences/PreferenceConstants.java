@@ -14,6 +14,7 @@ public class PreferenceConstants {
 	public static final String PAGE_ID_SITEMAP="com.eclipse.web.kit.preferences.sitemap";
 	public static final String PAGE_ID_BATCH_REPLACE="com.eclipse.web.kit.preferences.batchreplace";
 	public static final String PAGE_ID_NEWS_FEEDS="com.eclipse.web.kit.preferences.newsfeeds";
+	public static final String PAGE_ID_CONTENT_ASSIST_CSS="com.eclipse.web.kit.preferences.content.assist.css";
 	
 	
 	public static final String P_TEMPLATE_LINK = PAGE_ID_HTML_PALETTE+".templateLink";
@@ -30,6 +31,9 @@ public class PreferenceConstants {
 	public static final String P_SITEMAP_REPLACE_INDEX_FILE = PAGE_ID_SITEMAP+".replaceIndexFile";
 	public static final String P_SITEMAP_SITEMAP_FILE = PAGE_ID_SITEMAP+".sitemapFile";
 	public static final String P_SITEMAP_EXCLUSIONS = PAGE_ID_EXCLUSIONS+".sitemapExclusions";
+	
+	public static final String P_CSS_FILES = PAGE_ID_CONTENT_ASSIST_CSS+".cssFiles";
+	public static final String P_CSS_CLASSES = PAGE_ID_CONTENT_ASSIST_CSS+".cssClasses";
 	
 	
 	public static final String V_SITEMAP_REPLACE_INDEX_ROOT_ONLY="rootOnly";
