@@ -37,7 +37,9 @@ public class CssClassContentAssistProcessor implements IContentAssistProcessor {
 		if (prop != null) {
 			String[] classes = prop.split("\0");
 			for (String c: classes) {
-				result.add(c);
+				if (c.length() > 0) {
+					result.add(c);
+				}
 			}
 		}
 		
@@ -59,6 +61,10 @@ public class CssClassContentAssistProcessor implements IContentAssistProcessor {
 		if (prop != null) {
 			String[] fileNames = prop.split("\0");
 			for (String fileName: fileNames) {
+				if (fileName.length() == 0) {
+					continue;
+				}
+				
 				IFile file = project.getFile(fileName);
 				try {
 					Set<String> fileClassNames = extractor.extractClassNames(file);
