@@ -223,6 +223,9 @@
             priority="high"
             >
       </contentAssistProcessor>
+      <contentAssistProcessor
+            class="com.eclipse.web.kit.content.assist.NavJsContentAssistProcessor"
+            contentType="org.eclipse.wst.jsdt.core.jsSource">
+      </contentAssistProcessor>
    </extension>
-
 </plugin>
