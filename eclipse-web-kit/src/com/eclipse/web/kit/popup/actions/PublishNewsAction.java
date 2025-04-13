@@ -25,6 +25,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -147,6 +148,28 @@ public class PublishNewsAction extends FilePopupAction {
 		}
 	}
 	
+	private void normalizeDocument(Document doc) {
+	    doc.normalize(); // Объединяет смежные текстовые узлы
+	    removeEmptyTextNodes(doc.getDocumentElement());
+	}
+
+	private void removeEmptyTextNodes(Node node) {
+	    NodeList children = node.getChildNodes();
+	    for (int i = children.getLength() - 1; i >= 0; i--) {
+	        Node child = children.item(i);
+	        if (child.getNodeType() == Node.TEXT_NODE) {
+	            String text = child.getTextContent().trim();
+	            if (text.isEmpty()) {
+	                node.removeChild(child); // Удаляем пустой текстовый узел
+	            } else {
+	                child.setTextContent(text); // Удаляем лишние пробелы
+	            }
+	        } else if (child.getNodeType() == Node.ELEMENT_NODE) {
+	            removeEmptyTextNodes(child); // Рекурсивно обрабатываем дочерние элементы
+	        }
+	    }
+	}
+	
 	private void publishRSS(FeedFile feedFile) {
 		IFile rssFile=file.getProject().getFile(feedFile.getFilePath());
 		Document doc;
@@ -159,10 +182,13 @@ public class PublishNewsAction extends FilePopupAction {
 		appendRssItem(doc,feedFile);
 		checkRssMaxItems(doc, feedFile);
 		
+		normalizeDocument(doc);
+		
 		try {
 			Transformer t=TransformerFactory.newInstance().newTransformer();
 			t.setOutputProperty(OutputKeys.INDENT, "yes");
 			t.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			t.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 			t.transform(new DOMSource(doc), new StreamResult(rssFile.getLocation().toFile()));
 			rssFile.refreshLocal(IResource.DEPTH_ZERO, null);
 			
